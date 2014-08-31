@@ -307,6 +307,7 @@ include('config.php');
                         var type_email =  arrobaa[1].split('.');
                         if(type_email[0].toLowerCase()=='gmail'){
                            console.log('El correo tiene un formato correcto y es gmail');
+                           $('#ctagmail_usuario').parent().removeClass('error_2');
                             return true;
                         }else{
                             alert('El correo debe ser una cuenta gmail');
