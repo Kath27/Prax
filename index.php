@@ -255,6 +255,9 @@ include('config.php');
 
                     if(doc==''){
                         $('#documento').parent().addClass('error');
+                        //$('input').focus(function(){
+                        //    $('#documento').parent().removeClass('error')
+                        //});
                         validate_required = false;
                     }else{
                         $('#documento').parent().removeClass('error');
@@ -307,16 +310,12 @@ include('config.php');
                             return true;
                         }else{
                             alert('El correo debe ser una cuenta gmail');
+                            $('#ctagmail_usuario').parent().addClass('error_2');
                             return false;
                         }
                         
                     } else if(email_validate!='') {
-                                function not1(){
-                        notif({
-                            msg: "<b>Success:</b> In 5 seconds i'll be gone",
-                            type: "success"
-                            });
-                        }
+
                         return false;
                     }
                     return false;
