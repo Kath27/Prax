@@ -31,8 +31,8 @@ $( "#fechnac" ).datepicker({
 //Bloqueo caracteres//
 $().ready(function(){
     $('#documento').filter_input({regex:'[0-9]'});
-    $('#nombre').filter_input({regex:'[a-zA-Z]'});
-    $('#apellido').filter_input({regex:'[a-zA-Z]'}); 
+    $('#nombre').filter_input({regex:'[a-zA-Z ]'});
+    $('#apellido').filter_input({regex:'[a-zA-Z ]'}); 
 });
 //Fecha Actual Footer//
 var ano = (new Date).getFullYear();
