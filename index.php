@@ -234,6 +234,7 @@ include('config.php');
                         validate_required = false;
                         if(validateEmailGmail(email_validate)){
                            $('#ctagmail_usuario').parent().removeClass('error');
+                           $('#ctagmail_usuario').parent().removeClass('error_2');
                            validate_required = true;
                         } 
                     }
