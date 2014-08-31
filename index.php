@@ -146,7 +146,7 @@ include('config.php');
                                     </p>
                                     <p>
                                         <label>Fecha de nacimiento</label>
-                                        <input type="text" id="fechnac" placeholder="Escribe su fecha de nacimiento  (aaaa/mm/dd)"></input>
+                                        <input type="text" id="fechnac" placeholder="Escribe tu fecha de nacimiento  (aaaa/mm/dd)"></input>
                                         <label class="help">Este campo es requerido</label>
 
                                     </p>
