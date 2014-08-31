@@ -315,7 +315,8 @@ include('config.php');
                         }
                         
                     } else if(email_validate!='') {
-
+                        alert('El formato del correo no es valido');
+                        $('#ctagmail_usuario').parent().addClass('error_2');
                         return false;
                     }
                     return false;
