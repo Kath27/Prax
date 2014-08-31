@@ -28,6 +28,12 @@ $( "#fechnac" ).datepicker({
     dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
     dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
 });
+//Bloqueo caracteres//
+$().ready(function(){
+    $('#documento').filter_input({regex:'[0-9]'});
+    $('#nombre').filter_input({regex:'[a-zA-Z]'});
+    $('#apellido').filter_input({regex:'[a-zA-Z]'}); 
+});
 //Fecha Actual Footer//
 var ano = (new Date).getFullYear();
 $(".ano_current").text( ano );

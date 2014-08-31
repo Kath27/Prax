@@ -146,13 +146,13 @@ include('config.php');
                                     </p>
                                     <p>
                                         <label>Fecha de nacimiento</label>
-                                        <input type="text" id="fechnac" placeholder="Escribe tu fecha de nacimiento en el formato aaaa / mm / dd "></input>
+                                        <input type="text" id="fechnac" placeholder="Escribe su fecha de nacimiento  (aaaa/mm/dd)"></input>
                                         <label class="help">Este campo es requerido</label>
 
                                     </p>
                                     <p>
                                         <label>Tarjeta profesional</label>
-                                        <input type="text" id="targProfe" placeholder="Escribe tu código de tarjeta profesional que te acredita como psicólogo(a)"></input>
+                                        <input type="text" id="targProfe" placeholder="Registra tarjeta profesional como psicólogo"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
@@ -162,13 +162,12 @@ include('config.php');
                                     </p>
                                     <p>
                                         <label>Cuenta de gmail</label>
-                                        <input type="email" id="ctagmail_usuario" placeholder="Escribe la cuenta de gmail con la cual vas a ingresar al sistema"></input>
+                                        <input type="email" id="ctagmail_usuario" placeholder="Escribe tu cuenta de gmail"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <input id="validate_form" type="button" value="Guardar" ></input> 
                                     </p>
-
                                 </div>
                                 <!--<div id="tabs-2">
                                     <textarea></textarea>
@@ -188,7 +187,7 @@ include('config.php');
                             </form>
                         </div>
                     </div>
-                </div>
+                </div>            
             </article>
         </section>
         <footer>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
@@ -198,6 +197,7 @@ include('config.php');
         <script src="js/jquery-ui.js"></script>
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
+        <script src="js/jquery.filter_input.js"></script>
         <script>
             (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
             function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
@@ -309,7 +309,12 @@ include('config.php');
                         }
                         
                     } else if(email_validate!='') {
-                        alert('El formato del correo no es válido');
+                                function not1(){
+                        notif({
+                            msg: "<b>Success:</b> In 5 seconds i'll be gone",
+                            type: "success"
+                            });
+                        }
                         return false;
                     }
                     return false;
