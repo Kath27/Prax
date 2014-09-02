@@ -109,7 +109,7 @@ include('config.php');
                                 <a href="#" id="on_off_user"><span class="on"></span> Usuario Activo</a>
                             </div>-->
                         </div>
-                        <div id="tabs">
+                        <div id="tabs"> 
                             <ul>
                                 <li><a href="#tabs-1">Datos Generales</a></li>
                                 <!--<li><a href="#tabs-2">Motivo de consulta</a></li>
