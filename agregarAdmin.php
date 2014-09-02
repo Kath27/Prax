@@ -27,7 +27,7 @@ include ("utilidades.php");
         }
 
         // Insertamos los datos en la base de datos, si da algun error lo muestra. 
-        $sql = "INSERT INTO admin_psico (nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario) VALUES ('".$nombre."','".$apellido."','".$documento."','".$sexo."','".$fechnac."','".$targProfe."','".$ubicacion."', '".$ctagmail_usuario."')";
+        $sql = "INSERT INTO admin_psico (nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario,id_admin) VALUES ('".$nombre."','".$apellido."','".$documento."','".$sexo."','".$fechnac."','".$targProfe."','".$ubicacion."', '".$ctagmail_usuario."', 1)";
        
         mysql_query($sql) or die(imprimir_respuesta(false,mysql_error(),"ErrorMysql"));
 
