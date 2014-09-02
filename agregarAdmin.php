@@ -17,33 +17,26 @@ include ("utilidades.php");
         $ctagmail_usuario = htmlentities($_POST['ctagmail_usuario']);
 
         if (!filter_var($ctagmail_usuario, FILTER_VALIDATE_EMAIL)) {
-            echo "Esta dirección de correo ($ctagmail_usuario) no es válida.";
-            exit();
-        }
-
-        $sql = "SELECT * FROM admin_psico WHERE documento='" . $documento . "'";
-        $result = mysql_query($sql);
-        if ($result && mysql_num_rows($result) > 0){
-            imprimir_respuesta(false,"El documento ya existe");
+            imprimir_respuesta(false,"Esta dirección de correo ($ctagmail_usuario) no es válida.","ErrorCorreo");
         }
 
         $sql = "SELECT * FROM admin_psico WHERE ctagmail_usuario='" . $ctagmail_usuario . "'";
         $result = mysql_query($sql);
         if ($result && mysql_num_rows($result) > 0){
-            imprimir_respuesta(false,"Esta cuenta gmail ya existe");
+            imprimir_respuesta(false,"Esta cuenta gmail ya existe","ErrorCorreo");
         }
 
         // Insertamos los datos en la base de datos, si da algun error lo muestra. 
         $sql = "INSERT INTO admin_psico (nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario) VALUES ('".$nombre."','".$apellido."','".$documento."','".$sexo."','".$fechnac."','".$targProfe."','".$ubicacion."', '".$ctagmail_usuario."')";
        
-        mysql_query($sql) or die(imprimir_respuesta(false,mysql_error()));
+        mysql_query($sql) or die(imprimir_respuesta(false,mysql_error(),"ErrorMysql"));
 
         mysql_close();
         // Mostramos un mensaje diciendo que todo salio como lo esperado
         imprimir_respuesta(true,"Tu pre inscripción ha sido realizada con éxito, cuando sea activado el sistema te enviaremos un correo electrónico." . "\n" ." Fecha prevista de activación: Septiembre de 2014.");
     }
     else{
-        imprimir_respuesta(false,"Falta llenar algun dato");
+        imprimir_respuesta(false,"Falta llenar algun dato","FormularioVacio");
     }
 
 

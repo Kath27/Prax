@@ -37,10 +37,12 @@ include('config.php');
                 if (http.readyState == 4 && http.status == 200) {
                     var respuesta = JSON.parse(http.responseText);
                     if (respuesta.estado){
-                    alert(respuesta.message);
-                    limpiarform();
+                        alert(respuesta.message);
+                        limpiarform();
                     }else{
-                    alert(respuesta.message);
+                        if(respuesta.codigoerror=="ErrorCorreo")
+                            $('#ctagmail_usuario').parent().addClass('error_2');
+                        alert(respuesta.message);
                     }
                 }else if (http.readyState == 4){
                     alert("Ocurrio un error");
