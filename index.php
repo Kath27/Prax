@@ -1,4 +1,4 @@
-<?php include('config.php'); ?>
+<?php //include('config.php'); ?>
 <!DOCTYPE html>
     <head>
         <meta charset="utf-8">
@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/fonts.css">
+        <link rel="stylesheet" href="css/font.css">
         <link href="css/jquery_notification.css" type="text/css" rel="stylesheet"/>
         <script type="text/javascript">
             function registroAdmin(){
@@ -89,7 +89,7 @@
                 <img src="img/logo.png" title="Prax" alt="Prax">
                 <span>Assist</span>
             </div>
-            <button type="button" id="open_close_aside"></button>
+            <button type="button" id="open_close_aside" class="icon-grid"></button>
         </header>
         <section>
             <aside>
