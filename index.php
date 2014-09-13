@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/fonts.css">
         <link href="css/jquery_notification.css" type="text/css" rel="stylesheet"/>
         <script type="text/javascript">
             function registroAdmin(){
