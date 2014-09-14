@@ -117,7 +117,6 @@
         <script src="js/jquery-ui.js"></script>
         <script src="js/plugins.js"></script>
         <script src="js/jquery.filter_input.js"></script>
-        <script src="js/list.js"></script>
         <script type="text/javascript" src="jquery/jquery_notification_v.1.js"></script>
         <script src="js/main.js"></script>
         <?php //mysql_close($link); ?>
