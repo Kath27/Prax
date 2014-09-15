@@ -28,6 +28,10 @@ $( "#fechnac" ).datepicker({
     dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
     dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
 });
+//Tooltip//
+$("#profile_welcom_header").click(function(){
+    $(".tootip_header").fadeToggle(400);
+});
 //Bloqueo caracteres//
 $().ready(function(){
     $('#documento').filter_input({regex:'[0-9]'});
