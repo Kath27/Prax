@@ -12,12 +12,53 @@ handlers:
 - url: /
   script: index.php
 
-- url: /agregarAdmin
-  script: agregarAdmin.php
+- url: /agregarAdminAdmin
+  script: agregarAdminAdmin.php
+  
+- url: /agregarAdminPsico
+  script: agregarAdminPsico.php
+  
+- url: /agregarPaciente
+  script: agregarPaciente.php
 
 - url: /config
-  script: cofig.php
+  script: config.php
+  
+- url: /config_mongo
+  script: config_mongo.php
+  
+- url: /contarregistros
+  script: contarregistros.php
+  
+- url: /examplecharts
+  script: examplecharts.php
 
+- url: /helloworld
+  script: helloworld.php
+  
+- url: /AdminAdmin
+  script: indexAdminAdmin.php
+  
+- url: /AdminPsico
+  script: indexAdminPsico.php
+  
+- url: /Paciente
+  script: indexPaciente.php
+
+- url: /login_prueba
+  script: login_prueba.php
+
+- url: /historiaClinica
+  script: historiaClinica.php
+
+- url: /descarga
+  script: /tcpdf/examples/example_002.php
+
+- url: /utilidades
+  script: utilidades.php
+
+
+  
 - url: /css
   static_dir: css
 
@@ -26,3 +67,14 @@ handlers:
 
 - url: /js
   static_dir: js
+
+- url: /images
+  static_dir: images
+
+- url: /jquery
+  static_dir: jquery
+
+- url: /PHPMailer_5.2.4
+  static_dir: PHPMailer_5.2.4
+  
+

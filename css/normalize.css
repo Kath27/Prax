@@ -415,6 +415,14 @@ input {
     line-height: normal;
 }
 
+  .button{
+        	background: #a21218;
+			width: auto;
+			color: #fff;
+			font-weight: bold;
+			padding: 10px 30px;
+			border-radius: 5px;
+        }
 /**
  * Address inconsistent `text-transform` inheritance for `button` and `select`.
  * All other form control elements do not inherit `text-transform` values.

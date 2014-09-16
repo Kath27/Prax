@@ -1,6 +1,6 @@
 <?php
 
-	function imprimir_respuesta($estado,$mensaje,$codigoerror){
+	function imprimir_respuesta($estado,$mensaje,$codigoerror=""){
 		$respuesta = new stdClass();
         $respuesta->{"estado"} = $estado;
         $respuesta->{"message"} = $mensaje;

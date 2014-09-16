@@ -1,6 +1,4 @@
-<?php
-include('config.php');
-?>
+<?php include('config.php'); ?>
 <!DOCTYPE html>
     <head>
         <meta charset="utf-8">
@@ -10,6 +8,7 @@ include('config.php');
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
+        <link href="css/jquery_notification.css" type="text/css" rel="stylesheet"/>
         <script type="text/javascript">
             function registroAdmin(){
                 var nombre = encodeURI(document.getElementById("nombre").value);
@@ -21,7 +20,7 @@ include('config.php');
                 var ubicac = encodeURI(document.getElementById("searchTextField").value);
                 var ctagmail_usuario = encodeURI(document.getElementById("ctagmail_usuario").value);
                 var http = new XMLHttpRequest();
-                    http.open("POST", "agregarAdmin", true);
+                    http.open("POST", "agregarAdminPsico", true);
                     http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
                     http.send("nombre=" + nombre +
                                 "&apellido=" + apellido + 
@@ -37,15 +36,24 @@ include('config.php');
                 if (http.readyState == 4 && http.status == 200) {
                     var respuesta = JSON.parse(http.responseText);
                     if (respuesta.estado){
-                        alert(respuesta.message);
+                        showNotification({
+                            message: respuesta.message,
+                                type: "success"
+                        });
                         limpiarform();
                     }else{
                         if(respuesta.codigoerror=="ErrorCorreo")
                             $('#ctagmail_usuario').parent().addClass('error_2');
-                        alert(respuesta.message);
+                            showNotification({
+                                message: respuesta.message,
+                                    type: "error"
+                            });
                     }
                 }else if (http.readyState == 4){
-                    alert("Ocurrio un error");
+                    showNotification({
+                        message: "Ocurrio un error",
+                                type: "error"
+                    });
                 }
             };
             }
@@ -58,6 +66,18 @@ include('config.php');
                 document.getElementById("targProfe").value = "";
                 document.getElementById("searchTextField").value = "";
                 document.getElementById("ctagmail_usuario").value = "";
+            }
+            function verificarform(){
+                var nombre = encodeURI(document.getElementById("nombre").value);
+                var apellido = encodeURI(document.getElementById("apellido").value);
+                var doc = encodeURI(document.getElementById("documento").value);
+                var sexo = encodeURI(document.getElementById("sexo").value);
+                var fechanac = encodeURI(document.getElementById("fechnac").value);
+                var tarjeProf = encodeURI(document.getElementById("targProfe").value);
+                var ubicac = encodeURI(document.getElementById("searchTextField").value);
+                var ctagmail_usuario = encodeURI(document.getElementById("ctagmail_usuario").value);
+                return (nombre != "" && apellido != "" && doc !="" && sexo != "" && fechanac != "" && tarjeProf != "" && ubicac != "" && ctagmail_usuario != "");
+
             }
 
         </script>
@@ -120,7 +140,7 @@ include('config.php');
                                 <li><a href="#tabs-5">Tratamiento</a></li>
                                 <li><a href="#tabs-6">Anotaciones</a></li>-->
                             </ul>
-                            <form action="agregarAdmin.php" method="post" name="form">
+                            <form action="agregarAdminPsico.php" method="post" name="form">
                                 <div id="tabs-1">
                                     <p>
                                         <label>Nombre</label>
@@ -200,6 +220,7 @@ include('config.php');
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
         <script src="js/jquery.filter_input.js"></script>
+        <script type="text/javascript" src="jquery/jquery_notification_v.1.js"></script>
         <script>
             (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
             function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
@@ -322,7 +343,17 @@ include('config.php');
                     }
                     return false;
                 }
+
+                var temp_guadado;
+                $(document).keydown(function (){
+                    if(temp_guadado != null)
+                        clearTimeout(temp_guadado);
+                    if(verificarform())
+                        temp_guadado = setTimeout(registroAdmin, 3000);
+                });
+
         </script>
 
+        <?php mysql_close($link); ?>
     </body>
 </html>
