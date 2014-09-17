@@ -50,6 +50,9 @@ handlers:
 
 - url: /historiaClinica
   script: historiaClinica.php
+  
+- url: /AgregarHistoria
+  script: AgregarHistoria.php
 
 - url: /descarga
   script: /tcpdf/examples/example_002.php
@@ -73,8 +76,5 @@ handlers:
 
 - url: /jquery
   static_dir: jquery
-
-- url: /PHPMailer_5.2.4
-  static_dir: PHPMailer_5.2.4
   
 

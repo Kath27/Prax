@@ -19,7 +19,7 @@ session_start();
                 var doc = encodeURI(document.getElementById("documento").value);
                 var ctagmail_usuario = encodeURI(document.getElementById("ctagmail_usuario").value);
                 var http = new XMLHttpRequest();
-                    http.open("POST", "agregarAdminAdmin.php", true);
+                    http.open("POST", "agregarAdminAdmin", true);
                     http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
                     http.send("nombre=" + nombre +
                                 "&apellido=" + apellido + 

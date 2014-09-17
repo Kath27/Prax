@@ -1,6 +1,7 @@
 <?php
 include ("config.php");
-include ("utilidades.php");
+require_once ("utilidades.php");
+include ("mailToAdminAdmin.php");
 session_start();
 
     // Verificamos que no alla ningun dato sin rellenar.
@@ -30,7 +31,9 @@ session_start();
 
         mysql_close($link);
         // Mostramos un mensaje diciendo que todo salio como lo esperado
+        mailToAdmin($ctagmail_usuario);
         imprimir_respuesta(true,"Tu pre inscripción ha sido realizada con éxito, cuando sea activado el sistema te enviaremos un correo electrónico." . "\n" ." Fecha prevista de activación: Septiembre de 2014.");
+      
     }
     else{
         imprimir_respuesta(false,"Falta llenar algun dato","FormularioVacio");

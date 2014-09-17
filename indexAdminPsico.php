@@ -315,7 +315,7 @@ session_start();
                 }
 
                 var temp_guadado;
-                $(document).keydown(function (){
+                $("input[type=text],input[type=email]").keydown(function (){
                     if(temp_guadado != null)
                         clearTimeout(temp_guadado);
                     if(verificarform())

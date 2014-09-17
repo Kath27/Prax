@@ -1,8 +1,12 @@
 <?php
 include('config.php');
 include('config_mongo.php');
+include('utilidades.php');
 
-$historia = getHistoriaClinica();
+$id_paciente = 1;
+
+$historia = getHistoriaClinica($id_paciente);
+$historia = $historia[0];
 
 $sql = "SELECT nombre, apellido, documento, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail FROM prax.paciente";
 $result = mysql_query($sql, $link) or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
@@ -11,6 +15,7 @@ $paciente = mysql_fetch_row($result);
 $sql2 = "SELECT nombre, apellido, documento, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail FROM prax.paciente_contac";
 $result2 = mysql_query($sql2, $link) or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
 $paciente_contact = mysql_fetch_row($result2);
+
 
 ?>
 <!DOCTYPE html>
@@ -22,6 +27,53 @@ $paciente_contact = mysql_fetch_row($result2);
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
+        <link href="css/jquery_notification.css" type="text/css" rel="stylesheet"/>
+        <script type="text/javascript" charset="utf-8">
+            function registroHistoria(){
+                var motivo = encodeURI(document.getElementById("motivo").value);
+                var evaluacionMedico = encodeURI(document.getElementById("evaluacionMedico").value);
+                var evaluacionFami = encodeURI(document.getElementById("evaluacionFami").value);
+                var evaluacionPsico = encodeURI(document.getElementById("evaluacionPsico").value);
+                var evaluacionNeuro = encodeURI(document.getElementById("evaluacionNeuro").value);
+                var diagnostico = encodeURI(document.getElementById("diagnostico").value);
+                var tratamiento = encodeURI(document.getElementById("tratamiento").value);
+                var anotaciones = encodeURI(document.getElementById("anotaciones").value);
+                var http = new XMLHttpRequest();
+                    http.open("POST", "AgregarHistoria", true);
+                    http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                    http.send("id_paciente=<?php echo $id_paciente; ?>" + 
+                                "&motivo=" + motivo +
+                                "&evaluacionMedico=" + evaluacionMedico + 
+                                "&evaluacionFami=" + evaluacionFami + 
+                                "&evaluacionPsico=" + evaluacionPsico + 
+                                "&evaluacionNeuro=" + evaluacionNeuro + 
+                                "&diagnostico=" + diagnostico + 
+                                "&tratamiento=" + tratamiento + 
+                                "&anotaciones=" + anotaciones
+                                ); 
+                    http.onreadystatechange = function(){
+                        if (http.readyState == 4 && http.status == 200) {
+                            var respuesta = JSON.parse(http.responseText);
+                            if (respuesta.estado){
+                                showNotification({
+                                    message: respuesta.message,
+                                    type: "success"
+                                });
+                            }else{
+                                showNotification({
+                                    message: respuesta.message,
+                                    type: "error"
+                                });
+                            }
+                        }else if (http.readyState == 4){
+                            showNotification({
+                                message: "Ocurrio un error",
+                                type: "error"
+                            });
+                        }
+                    };            
+                }
+        </script>
     </head>
     <body>
         <header>
@@ -120,46 +172,30 @@ $paciente_contact = mysql_fetch_row($result2);
                                         <a href="descarga" class="button">Descarga historia clínica</a> 
                                     </p>
                                 </div>    
-                                <div id="tabs-2">                                    
-                                	<?php foreach ($historia as $document) { ?>
-                                       <textarea name="motivo" id="motivo" value="motivo" rows="10" cols="40"><?php echo $document->{"motivo"} ?></textarea>
-                                   <?php } ?>                                     
+                                <div id="tabs-2">
+                                     <textarea id="motivo"><?php echo $historia->{"motivo"};?></textarea>                                     
                                 </div>
                                 <div id="tabs-3">
                                     <p>Evaluación de aspectos médicos</p>
-                                    <?php foreach ($historia as $document) { ?>
-                                       <textarea name="evaluacionMedico" id="evaluacionMedico" value="evaluacionMedico" rows="10" cols="40"><?php echo $document->{"evaluacionMedico"} ?></textarea>
-                                   <?php } ?> 
+                                    <textarea id="evaluacionMedico"><?php echo $historia->{"evaluacionMedico"};?></textarea> 
                                         
                                     <p>Evaluación de aspectos familiares</p>
-                                    <?php foreach ($historia as $document) { ?>
-                                       <textarea name="evaluacionFami" id="evaluacionFami" value="evaluacionFami" rows="10" cols="40"><?php echo $document->{"evaluacionFami"} ?></textarea>
-                                   <?php } ?> 
+                                    <textarea id="evaluacionFami"><?php echo $historia->{"evaluacionFami"};?></textarea>
                                    
                                     <p>Evaluación de aspectos psicológicos</p>
-                                    <?php foreach ($historia as $document) { ?>
-                                       <textarea name="evaluacionPsico" id="evaluacionPsico" value="evaluacionPsico" rows="10" cols="40"><?php echo $document->{"evaluacionPsico"} ?></textarea>
-                                   <?php } ?>
+                                    <textarea id="evaluacionPsico"><?php echo $historia->{"evaluacionPsico"};?></textarea>
                                    
                                     <p>Evaluación de aspectos neuropsicológicos</p>
-                                    <?php foreach ($historia as $document) { ?>
-                                       <textarea name="evaluacionNeuro" id="evaluacionNeuro" value="evaluacionNeuro" rows="10" cols="40"><?php echo $document->{"evaluacionNeuro"} ?></textarea>
-                                   <?php } ?>
+                                    <textarea id="evaluacionNeuro"><?php echo $historia->{"evaluacionNeuro"};?></textarea>
                                 </div>
                                 <div id="tabs-4">
-                                    <?php foreach ($historia as $document) { ?>
-                                       <textarea name="diagnostico" id="diagnostico" value="diagnostico" rows="10" cols="40"><?php echo $document->{"diagnostico"} ?></textarea>
-                                   <?php } ?> 
+                                    <textarea id="diagnostico"><?php echo $historia->{"diagnostico"};?></textarea>
                                 </div>
                                 <div id="tabs-5">
-                                    <?php foreach ($historia as $document) { ?>
-                                       <textarea name="tratamiento" id="tratamiento" value="tratamiento" rows="10" cols="40"><?php echo $document->{"tratamiento"} ?></textarea>
-                                   <?php } ?> 
+                                    <textarea id="tratamiento"><?php echo $historia->{"tratamiento"};?></textarea>
                                 </div>
                                 <div id="tabs-6">
-                                    <?php foreach ($historia as $document) { ?>
-                                       <textarea name="anotaciones" id="anotaciones" value="anotaciones" rows="10" cols="40"><?php echo $document->{"anotaciones"} ?></textarea>
-                                   <?php } ?>
+                                    <textarea id="anotaciones"><?php echo $historia->{"anotaciones"};?></textarea>
                                 </div>
                                 <div id="tabs-7">
                                     <p>
@@ -209,6 +245,8 @@ $paciente_contact = mysql_fetch_row($result2);
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
         <script src="js/jquery.filter_input.js"></script>
+        <script type="text/javascript" src="jquery/jquery_notification_v.1.js"></script>
+
         <script>
             (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
             function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
@@ -331,6 +369,13 @@ $paciente_contact = mysql_fetch_row($result2);
                     }
                     return false;
                 }
+                
+                var temp_guadado;
+                $("textarea").keydown(function (){
+                    if(temp_guadado != null)
+                        clearTimeout(temp_guadado);
+                    temp_guadado = setTimeout(registroHistoria, 3000);
+                });
         </script>
 
         <?php mysql_close($link); ?>
