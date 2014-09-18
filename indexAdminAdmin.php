@@ -69,12 +69,33 @@ session_start();
         </script>
     </head>
     <body>
-        <header>
+          <header>
             <div id="logo">
                 <img src="img/logo.png" title="Prax" alt="Prax">
                 <span>Assist</span>
             </div>
-            <button type="button" id="open_close_aside"></button>
+            <button type="button" id="open_close_aside" class="icon-grid"></button>
+            <div id="profile_welcom_header">
+                <div class="cont_avatar">
+                    <div class="avatar">
+                        <img src="img/avatar-def.jpg">
+                    </div>
+                </div>
+            </div>
+            <div class="tootip_header">
+                <div id="profile_welcom_header_tootip">
+                    <div class="cont_avatar">
+                        <div class="avatar">
+                            <img src="img/avatar-def.jpg">
+                        </div>
+                    </div>
+                    <div class="cont_welcom">
+                        <h3>Nombre Usuario</h3>
+                        <p>usuario@usuario.com</p>
+                    </div> 
+                </div>
+                <button type="button" id="logut">Salir de la Plataforma</button>
+            </div>
         </header>
         <section>
             <aside>
@@ -90,14 +111,7 @@ session_start();
                     </div>
                 </div>
                 <nav>
-                    <ul>
-                        <a href="#"><li class="active">Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                    </ul>
+                    <?php include("menu.php"); ?>
                 </nav>
             </aside>
             <article>
@@ -113,22 +127,22 @@ session_start();
                                 <div id="tabs-1">
                                     <p>
                                         <label>Nombre</label>
-                                        <input type="text" id="nombre" placeholder="Escribe tu nombre completo"></input>
+                                        <input type="text" id="nombre" placeholder="Escribe su nombre completo"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Apellidos</label>
-                                        <input type="text" id="apellido" placeholder="Escribe tus apellidos"></input>
+                                        <input type="text" id="apellido" placeholder="Escribe sus apellidos"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Documento de identidad</label>
-                                        <input type="text" id="documento" placeholder="Escribe tu documento de identidad nacional (DNI)"></input>
+                                        <input type="text" id="documento" placeholder="Escribe su documento de identidad nacional (DNI)"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Cuenta de gmail</label>
-                                        <input type="email" id="ctagmail_usuario" placeholder="Escribe tu cuenta de gmail"></input>
+                                        <input type="email" id="ctagmail_usuario" placeholder="Escribe su cuenta de gmail"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>                                    
                             </form>

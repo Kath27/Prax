@@ -2,14 +2,13 @@
 include("../../config.php");
 include("../../config_mongo.php");
 
-$sql = "SELECT nombre, apellido FROM prax.paciente";
+$id_paciente = $_GET["paciente"];
+$sql = "SELECT nombre, apellido, documento FROM prax.paciente WHERE documento='" . $id_paciente . "'";
 $result = mysql_query($sql, $link) or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
 $paciente = mysql_fetch_row($result);
 
-$result = mysql_query("SELECT descripcion FROM prax.evaluacion", $link)or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
-$evaluacion = utf8_encode(mysql_fetch_row($result)[0]); 
-
-$historia = getHistoriaClinica()[0];
+$historia = getHistoriaClinica($id_paciente);
+$historia = $historia[0];
 
 /**
  * Creates an example PDF TEST document using TCPDF
@@ -91,6 +90,14 @@ $pdf->SetFillColor(176, 176, 176);
 $pdf->MultiCell(180, 0, $txtApellido, 0, 'L', 1, 0, '', '', true, 0, false, true, 0);
 $pdf->Ln(10);
 
+// Documento
+$txtdoc=<<<EOD
+Documento: $paciente[2]
+EOD;
+$pdf->SetFillColor(176, 176, 176);
+$pdf->MultiCell(180, 0, $txtdoc, 0, 'L', 1, 0, '', '', true, 0, false, true, 0);
+$pdf->Ln(10);
+
 // Motivo consulta
 $motivo = $historia->{"motivo"};
 $txtMotivo_consulta=<<<EOD
@@ -101,13 +108,42 @@ $pdf->SetFillColor(176, 176, 176);
 $pdf->MultiCell(180, 0, $txtMotivo_consulta, 0, 'L', 1, 0, '', '', true, 0, false, true, 0);
 $pdf->Ln($numL + 4);
 
-// Evaluacion
-$txtEvaluacion=<<<EOD
-Evaluacion: $evaluacion 
+// evaluacionMedico
+$evaluacionMedico = $historia->{"evaluacionMedico"};
+$txtevaluacionMedico=<<<EOD
+Evaluación de aspectos médicos: $evaluacionMedico
 EOD;
 $pdf->SetFillColor(176, 176, 176);
-$pdf->MultiCell(180, 0, $txtEvaluacion, 0, 'L', 1, 0, '', '', true, 0, false, true, 0);
+$pdf->MultiCell(180, 0, $txtevaluacionMedico, 0, 'L', 1, 0, '', '', true, 0, false, true, 0);
 $pdf->Ln(10);
+
+// evaluacionFami
+$evaluacionFami = $historia->{"evaluacionFami"};
+$txtevaluacionFami=<<<EOD
+Evaluación de aspectos familiares: $evaluacionFami
+EOD;
+$pdf->SetFillColor(176, 176, 176);
+$pdf->MultiCell(180, 0, $txtevaluacionFami, 0, 'L', 1, 0, '', '', true, 0, false, true, 0);
+$pdf->Ln(10);
+
+// evaluacionPsico
+$evaluacionPsico = $historia->{"evaluacionPsico"};
+$txtevaluacionPsico=<<<EOD
+Evaluación de aspectos psicológicos: $evaluacionPsico
+EOD;
+$pdf->SetFillColor(176, 176, 176);
+$pdf->MultiCell(180, 0, $txtevaluacionPsico, 0, 'L', 1, 0, '', '', true, 0, false, true, 0);
+$pdf->Ln(10);
+
+// evaluacionNeuro
+$evaluacionNeuro = $historia->{"evaluacionNeuro"};
+$txtevaluacionNeuro=<<<EOD
+Evaluación de aspectos neuropsicológicos: $evaluacionNeuro
+EOD;
+$pdf->SetFillColor(176, 176, 176);
+$pdf->MultiCell(180, 0, $txtevaluacionNeuro, 0, 'L', 1, 0, '', '', true, 0, false, true, 0);
+$pdf->Ln(10);
+
 
 //Diagnostico
 $diagnostico = $historia->{"diagnostico"};

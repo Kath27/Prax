@@ -10,6 +10,9 @@ handlers:
   upload: favicon\.ico
 
 - url: /
+  script: login.php
+
+- url: /index
   script: index.php
 
 - url: /agregarAdminAdmin
@@ -42,11 +45,11 @@ handlers:
 - url: /AdminPsico
   script: indexAdminPsico.php
   
-- url: /Paciente
+- url: /indexPaciente
   script: indexPaciente.php
 
-- url: /login_prueba
-  script: login_prueba.php
+- url: /list-paci
+  script: list-paci.php
 
 - url: /historiaClinica
   script: historiaClinica.php
@@ -59,9 +62,10 @@ handlers:
 
 - url: /utilidades
   script: utilidades.php
-
-
   
+- url: /list-user
+  script: list-user.php
+
 - url: /css
   static_dir: css
 

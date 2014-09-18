@@ -16,7 +16,7 @@ session_start();
         $targProfe = htmlentities($_POST['targProfe']);
         $ubicacion = htmlentities($_POST['ubicacion']);
         $ctagmail_usuario = htmlentities($_POST['ctagmail_usuario']);
-        $user=1;/*$user=$_SESSION["getUserId"];*/
+        
 
         if (!filter_var($ctagmail_usuario, FILTER_VALIDATE_EMAIL)) {
             imprimir_respuesta(false,"Esta dirección de correo ($ctagmail_usuario) no es válida.","ErrorCorreo");
@@ -29,7 +29,7 @@ session_start();
         }
 
         // Insertamos los datos en la base de datos, si da algun error lo muestra. 
-        $sql = "INSERT INTO admin_psico (nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario,id_admin) VALUES ('".$nombre."','".$apellido."','".$documento."','".$sexo."','".$fechnac."','".$targProfe."','".$ubicacion."','".$ctagmail_usuario."','".$user."')";
+        $sql = "INSERT INTO admin_psico (nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario) VALUES ('".$nombre."','".$apellido."','".$documento."','".$sexo."','".$fechnac."','".$targProfe."','".$ubicacion."','".$ctagmail_usuario."')";
        
         mysql_query($sql,$link) or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
 

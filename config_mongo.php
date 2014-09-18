@@ -5,9 +5,10 @@
 	}
 
 	function getHistoriaClinica($idPaciente){
-	    $query = urlencode('{"id_paciente" : ' . $idPaciente . '}');
+	    $query = urlencode('{"id_paciente":"' . $idPaciente . '"}');
 		$url = "https://api.mongolab.com/api/1/databases/prax/collections/historia_clinica?apiKey=" . getMongoApiKey() . "&q=" . $query;
-		$contenido = json_decode(file_get_contents($url));
+        $result = file_get_contents($url);
+		$contenido = json_decode($result);
 		return $contenido;
 	}
     function guardarHistoria($idPaciente,$motivo="",$evaluacionMedico="", $evaluacionFami="", $evaluacionPsico="", $evaluacionNeuro="", $diagnostico="", $tratamiento="", $anotaciones=""){
@@ -35,6 +36,31 @@
             ),
         );
         
+        $context  = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        
+        return json_decode($result);
+    }
+    
+    function crearHistoria($docPaciente){
+        $url = "https://api.mongolab.com/api/1/databases/prax/collections/historia_clinica?apiKey=" . getMongoApiKey();
+        $data= new stdClass();
+        $data->{"id_paciente"}=$docPaciente;
+        $data->{"motivo"}="";
+        $data->{"evaluacionMedico"}="";
+        $data->{"evaluacionFami"}="";
+        $data->{"evaluacionPsico"}="";
+        $data->{"evaluacionNeuro"}="";
+        $data->{"diagnostico"}="";
+        $data->{"tratamiento"}="";
+        $data->{"anotaciones"}="";
+        $options = array(
+            'http' => array(
+                'header'  => "Content-type: application/json\r\n",
+                'method'  => 'POST',
+                'content' => json_encode($data),
+            ),
+        );
         $context  = stream_context_create($options);
         $result = file_get_contents($url, false, $context);
         

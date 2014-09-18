@@ -1,6 +1,10 @@
-<?php include('config.php');?>
+<?php include('config.php'); ?>
 <?php
-    $sql = "SELECT nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario FROM prax.admin_psico";
+    session_start();
+    $sql = "SELECT documento, nombre, apellido, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, sexo FROM prax.paciente";
+    if($_SESSION["rol"]="psico"){
+        $sql.=" WHERE id_adminpsic='".$_SESSION["userId"]."'";
+    }
     $result = mysql_query($sql,$link)or die(exit(mysql_error($link)));       
 ?>
 <!DOCTYPE html>
@@ -30,7 +34,7 @@
         </script>
     </head>
     <body>
-        <header>
+          <header>
             <div id="logo">
                 <img src="img/logo.png" title="Prax" alt="Prax">
                 <span>Assist</span>
@@ -68,7 +72,7 @@
                     </div>
                     <div class="cont_welcom">
                         <h3>Bienvenido</h3>
-                        <p>Administrador Admin</p>
+                        <p>Administrador Psicólogo</p>
                     </div>
                 </div>
                 <nav>
@@ -78,25 +82,25 @@
             <article>
                 <div class="row">
                     <div class="panel" id="cosa">
-                        <h2 class="title_panel">Lista de Usuarios</h2>
+                        <h2 class="title_panel">Lista de Pacientes</h2>
                         <div class="cont_search_user">
                             <input class="search" id="search" type="search" placeholder="Escriba un criterio de búsqueda"></input>
                             <button class="icon-search3" data-sort="name" ></button>
                         </div>
-                        <a href="AdminPsico" class="add_user">
+                        <a href="indexPaciente" class="add_user">
                             <div class="cont_avatar">
                                 <div class="avatar">
                                     <img src="img/avatar-def.jpg">
                                 </div>
                             </div>
                             <div class="cont_user_list">
-                                <h2>Agregar Nuevo Usuario</h2>
+                                <h2>Agregar Nuevo Paciente</h2>
                                 <div class="description_list_user">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sagittis massa vel est scelerisque, id cursus ligula elementum. Vivamus in justo ex.</div>
                             </div>
                         </a>
                         <ul id="list_users">
                             <?php while ($psico = mysql_fetch_array($result)) { ?>
-                                <a class="aBloqueUsuario" href="#">
+                                <a class="aBloqueUsuario" href="historiaClinica?paciente=<?php echo $psico[0]; ?>">
                                     <li>
                                         <div class="cont_avatar">
                                             <div class="avatar">
@@ -106,7 +110,7 @@
                                         </div>
                                         <div class="cont_user_list">
                                             <input type="hidden" id="hidcriteriosbusqueda" value="<?php echo $psico[0] ." ". $psico[1] .";". $psico[2] .";". $psico[7];?>"/>
-                                            <h2 class="name"><?php echo $psico[0] ." ". $psico[1];?></h2>
+                                            <h2 class="name"><?php echo $psico[1] ." ". $psico[2];?></h2>
                                             <div class="description_list_user"><?php echo $psico[7];?></div>
                                         </div>
                                     </li>

@@ -85,12 +85,33 @@ session_start();
         </script>
     </head>
     <body>
-        <header>
+          <header>
             <div id="logo">
                 <img src="img/logo.png" title="Prax" alt="Prax">
                 <span>Assist</span>
             </div>
-            <button type="button" id="open_close_aside"></button>
+            <button type="button" id="open_close_aside" class="icon-grid"></button>
+            <div id="profile_welcom_header">
+                <div class="cont_avatar">
+                    <div class="avatar">
+                        <img src="img/avatar-def.jpg">
+                    </div>
+                </div>
+            </div>
+            <div class="tootip_header">
+                <div id="profile_welcom_header_tootip">
+                    <div class="cont_avatar">
+                        <div class="avatar">
+                            <img src="img/avatar-def.jpg">
+                        </div>
+                    </div>
+                    <div class="cont_welcom">
+                        <h3>Nombre Usuario</h3>
+                        <p>usuario@usuario.com</p>
+                    </div> 
+                </div>
+                <button type="button" id="logut">Salir de la Plataforma</button>
+            </div>
         </header>
         <section>
             <aside>
@@ -105,15 +126,8 @@ session_start();
                         <p>Administrador Admin</p>
                     </div>
                 </div>
-                <nav>
-                    <ul>
-                        <a href="#"><li class="active">Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                    </ul>
+               <nav>
+                    <?php include("menu.php"); ?>
                 </nav>
             </aside>
             <article>
@@ -170,6 +184,12 @@ session_start();
                                     <p>
                                         <label>Cuenta de gmail</label>
                                         <input type="email" id="ctagmail_usuario" placeholder="Escribe tu cuenta de gmail"></input>
+                                        <label class="help">Este campo es requerido</label>
+                                    </p>
+                                    <p>
+                                        <label>Estado de paciente</label>
+                                        <input type="radio" name="estado" id="estadopsico_activo">Activo</input>
+                                        <input type="radio" name="estado" id="estadopsico_inactivo">Inactivo</input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>

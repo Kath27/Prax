@@ -1,4 +1,4 @@
-<?php //include('config.php'); ?>
+<?php include('config.php'); ?>
 <!DOCTYPE html>
     <head>
         <meta charset="utf-8">
@@ -84,12 +84,33 @@
         </script>
     </head>
     <body>
-        <header>
+          <header>
             <div id="logo">
                 <img src="img/logo.png" title="Prax" alt="Prax">
                 <span>Assist</span>
             </div>
             <button type="button" id="open_close_aside" class="icon-grid"></button>
+            <div id="profile_welcom_header">
+                <div class="cont_avatar">
+                    <div class="avatar">
+                        <img src="img/avatar-def.jpg">
+                    </div>
+                </div>
+            </div>
+            <div class="tootip_header">
+                <div id="profile_welcom_header_tootip">
+                    <div class="cont_avatar">
+                        <div class="avatar">
+                            <img src="img/avatar-def.jpg">
+                        </div>
+                    </div>
+                    <div class="cont_welcom">
+                        <h3>Nombre Usuario</h3>
+                        <p>usuario@usuario.com</p>
+                    </div> 
+                </div>
+                <button type="button" id="logut">Salir de la Plataforma</button>
+            </div>
         </header>
         <section>
             <aside>
@@ -101,7 +122,7 @@
                     </div>
                     <div class="cont_welcom">
                         <h3>Bienvenido</h3>
-                        <p>Administrador Admin</p>
+                        <p></p>
                     </div>
                 </div>
                 <nav>

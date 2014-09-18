@@ -3,7 +3,7 @@ include('config.php');
 include('config_mongo.php');
 include('utilidades.php');
 
-$id_paciente = 1;
+$id_paciente = $_GET["paciente"];
 
 $historia = getHistoriaClinica($id_paciente);
 $historia = $historia[0];
@@ -76,12 +76,33 @@ $paciente_contact = mysql_fetch_row($result2);
         </script>
     </head>
     <body>
-        <header>
+          <header>
             <div id="logo">
                 <img src="img/logo.png" title="Prax" alt="Prax">
                 <span>Assist</span>
             </div>
-            <button type="button" id="open_close_aside"></button>
+            <button type="button" id="open_close_aside" class="icon-grid"></button>
+            <div id="profile_welcom_header">
+                <div class="cont_avatar">
+                    <div class="avatar">
+                        <img src="img/avatar-def.jpg">
+                    </div>
+                </div>
+            </div>
+            <div class="tootip_header">
+                <div id="profile_welcom_header_tootip">
+                    <div class="cont_avatar">
+                        <div class="avatar">
+                            <img src="img/avatar-def.jpg">
+                        </div>
+                    </div>
+                    <div class="cont_welcom">
+                        <h3>Nombre Usuario</h3>
+                        <p>usuario@usuario.com</p>
+                    </div> 
+                </div>
+                <button type="button" id="logut">Salir de la Plataforma</button>
+            </div>
         </header>
         <section>
             <aside>
@@ -97,14 +118,7 @@ $paciente_contact = mysql_fetch_row($result2);
                     </div>
                 </div>
                 <nav>
-                    <ul>
-                        <a href="#"><li class="active">Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                    </ul>
+                    <?php include("menu.php"); ?>
                 </nav>
             </aside>
             <article>
@@ -126,7 +140,7 @@ $paciente_contact = mysql_fetch_row($result2);
                         </div>
                         <div id="tabs"> 
                             <ul>
-                                <li><a href="#tabs-1">Datos de paciente</a></li>
+                                <li><a href="#tabs-1">Datos de identificación</a></li>
                                 <li><a href="#tabs-2">Motivo de consulta</a></li>
                                 <li><a href="#tabs-3">Evaluación</a></li>
                                 <li><a href="#tabs-4">Diagnóstico</a></li>
@@ -169,7 +183,7 @@ $paciente_contact = mysql_fetch_row($result2);
                                         <input type="text" id="apellido"value= "<?php echo($paciente[7]);?>" readonly="readonly"/>
                                     </p>
                                     <p>
-                                        <a href="descarga" class="button">Descarga historia clínica</a> 
+                                        <a href="descarga?paciente=<?php echo $id_paciente; ?>" class="button" target="_blank">Descarga historia clínica</a> 
                                     </p>
                                 </div>    
                                 <div id="tabs-2">
@@ -224,6 +238,10 @@ $paciente_contact = mysql_fetch_row($result2);
                                     </p>
                                     <p>
                                         <label>Teléfono movil</label>
+                                        <input type="text" id="tel_mo_cont"value= "<?php echo($paciente_contact[6]);?>" readonly="readonly"/>
+                                    </p>
+                                    <p>
+                                        <label>Tipo de relación</label>
                                         <input type="text" id="tel_mo_cont"value= "<?php echo($paciente_contact[6]);?>" readonly="readonly"/>
                                     </p>
                                     <p>
