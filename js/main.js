@@ -16,7 +16,7 @@ $('#open_upload_avatar').hover(function(){
    $('.icon_upload').toggleClass('icon_upload_on');
 });
 //Datepicker jQuery UI//
-$( "#fechnac" ).datepicker({
+$( "#fechnac,#fechanac_cont" ).datepicker({
     changeMonth: true,
     changeYear: true,
     yearRange: '1920:2000',
@@ -34,7 +34,7 @@ $("#profile_welcom_header").click(function(){
 });
 //Bloqueo caracteres//
 $().ready(function(){
-    $('#documento').filter_input({regex:'[0-9]'});
+    $('#documento,#documento_cont').filter_input({regex:'[0-9]'});
     $('#nombre').filter_input({regex:'[a-zA-Z ]'});
     $('#apellido').filter_input({regex:'[a-zA-Z ]'}); 
 });

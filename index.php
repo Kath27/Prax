@@ -113,29 +113,6 @@
             </div>
         </header>
         <section>
-            <aside>
-                <div id="profile_welcom">
-                    <div class="cont_avatar">
-                        <div class="avatar">
-                            <img src="img/avatar-def.jpg">
-                        </div>
-                    </div>
-                    <div class="cont_welcom">
-                        <h3>Bienvenido</h3>
-                        <p></p>
-                    </div>
-                </div>
-                <nav>
-                    <ul>
-                        <a href="#"><li class="active">Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                        <a href="#"><li>Lorem ipsum </li></a>
-                    </ul>
-                </nav>
-            </aside>
             <article>
                 <div class="row">
                     <div class="panel">

@@ -14,6 +14,9 @@ handlers:
 
 - url: /index
   script: index.php
+  
+- url: /bienvenida
+  script: bienvenida.php
 
 - url: /agregarAdminAdmin
   script: agregarAdminAdmin.php
@@ -21,17 +24,29 @@ handlers:
 - url: /agregarAdminPsico
   script: agregarAdminPsico.php
   
+- url: /actualizarAnotacion
+  script: actualizarAnotacion.php
+
 - url: /agregarPaciente
   script: agregarPaciente.php
+  
+- url: /activarPsicologo
+  script: activarPsicologo.php  
 
 - url: /config
   script: config.php
+
+- url: /logOut
+  script: logOut.php   
   
 - url: /config_mongo
   script: config_mongo.php
   
 - url: /contarregistros
   script: contarregistros.php
+
+- url: /actualizarAdminPsico
+  script: actualizarAdminPsico.php
   
 - url: /examplecharts
   script: examplecharts.php
@@ -44,6 +59,9 @@ handlers:
   
 - url: /AdminPsico
   script: indexAdminPsico.php
+  
+- url: /edicionPsico
+  script: edicionPsico.php
   
 - url: /indexPaciente
   script: indexPaciente.php

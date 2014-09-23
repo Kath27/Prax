@@ -4,10 +4,10 @@ include ("utilidades.php");
 include_once("config_mongo.php");
 session_start();
 
-    // Verificamos que no alla ningun dato sin rellenar.
+    
     if(!empty($_POST['documento']) && !empty($_POST['nombre']) && !empty($_POST['apellido']) && !empty($_POST['fechnac']) && !empty($_POST['ubicacion']) && !empty($_POST['tel_fijo']) && !empty($_POST['tel_movil']) && !empty($_POST['ctagmail']) && !empty($_POST['sexo']))
     {
-        // Pasamos los datos de los POST a Variables, y le ponemos seguridad.
+        
         $documento = htmlentities($_POST['documento']);
         $nombre = htmlentities($_POST['nombre']);
         $apellido = htmlentities($_POST['apellido']);
@@ -18,13 +18,21 @@ session_start();
         $ctagmail = htmlentities($_POST['ctagmail']);
         $sexo = htmlentities($_POST['sexo']);
         $user=$_SESSION["userId"];
+        date_default_timezone_set('America/Lima');
+        $fecha = date("Y-m-d H:i:s");
 
         if (!filter_var($ctagmail, FILTER_VALIDATE_EMAIL)) {
             imprimir_respuesta(false,"Esta dirección de correo ($ctagmail_usuario) no es válida.","ErrorCorreo");
         }
-
+        if($_SESSION["rol"]=="admin"){
+           $columnaAdmin =  "id_admin";
+        }
+        else{
+            $columnaAdmin = "id_adminpsic";
+        }
+        
                 // Insertamos los datos en la base de datos, si da algun error lo muestra. 
-        $sql = "INSERT INTO paciente (documento, nombre, apellido, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, sexo, id_adminpsic) VALUES ('".$documento."','".$nombre."','".$apellido."','".$fechnac."','".$ubicacion."','".$tel_fijo."','".$tel_movil."','".$ctagmail."','".$sexo."', '".$user."')";
+        $sql = "INSERT INTO paciente (documento, nombre, apellido, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, sexo, fecha_crea, " . $columnaAdmin . ") VALUES ('".$documento."','".$nombre."','".$apellido."','".$fechnac."','".$ubicacion."','".$tel_fijo."','".$tel_movil."','".$ctagmail."','".$sexo."', '".$fecha."','".$user."')";
        
         mysql_query($sql,$link) or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
 

@@ -1,7 +1,36 @@
 <?php
-include('config.php');
-session_start();
- ?>
+    include('config.php');
+    session_start();
+    
+    $psicologo = new stdClass();
+    if($_SESSION["rol"]=="psico"){
+        $psicologo->{"nombre"}=$_SESSION["nombre"];
+        $psicologo->{"apellido"}=$_SESSION["apellido"];
+        $psicologo->{"documento"}=$_SESSION["documento"];
+        $psicologo->{"sexo"}=$_SESSION["sexo"];
+        $psicologo->{"fechnac"}=$_SESSION["fechnac"];
+        $psicologo->{"targProfe"}=$_SESSION["targProfe"];
+        $psicologo->{"ubicacion"}=$_SESSION["ubicacion"];
+        $psicologo->{"ctagmail_usuario"}=$_SESSION["ctagmail_usuario"];
+        $psicologo->{"userId"}=$_SESSION["userId"];    
+    }else if($_SESSION["rol"]=="admin"){
+        $documento=$_GET["psicologo"];
+        $sql="SELECT nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario, isActive, id_adminpsic FROM prax.admin_psico WHERE documento='".$documento."'";
+        $result=mysql_query($sql,$link)or die(exit(mysql_error($link)));
+        $psico=mysql_fetch_row($result);
+        
+        $psicologo->{"nombre"}=$psico[0];
+        $psicologo->{"apellido"}=$psico[1];
+        $psicologo->{"documento"}=$psico[2];
+        $psicologo->{"sexo"}=$psico[3];
+        $psicologo->{"fechnac"}=$psico[4];
+        $psicologo->{"targProfe"}=$psico[5];
+        $psicologo->{"ubicacion"}=$psico[6];
+        $psicologo->{"ctagmail_usuario"}=$psico[7];
+        $psicologo->{"userId"}=$psico[9]; 
+    }
+    
+?>
 <!DOCTYPE html>
     <head>
         <meta charset="utf-8">
@@ -22,8 +51,9 @@ session_start();
                 var tarjeProf = encodeURI(document.getElementById("targProfe").value);
                 var ubicac = encodeURI(document.getElementById("searchTextField").value);
                 var ctagmail_usuario = encodeURI(document.getElementById("ctagmail_usuario").value);
+                var idPsico = encodeURI(document.getElementById("idPsico").value);
                 var http = new XMLHttpRequest();
-                    http.open("POST", "agregarAdminPsico", true);
+                    http.open("POST", "actualizarAdminPsico", true);
                     http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
                     http.send("nombre=" + nombre +
                                 "&apellido=" + apellido + 
@@ -32,6 +62,7 @@ session_start();
                                 "&fechnac=" + fechanac + 
                                 "&targProfe=" + tarjeProf + 
                                 "&ubicacion=" + ubicac + 
+                                "&idPsico=" + idPsico +
                                 "&ctagmail_usuario=" + ctagmail_usuario
                                 );               
                 http.onreadystatechange = function(){
@@ -42,7 +73,9 @@ session_start();
                             message: respuesta.message,
                                 type: "success"
                         });
-                        limpiarform();
+                        setTimeout(function(){
+                            location.reload();
+                        },100);
                     }else{
                         if(respuesta.codigoerror=="ErrorCorreo")
                             $('#ctagmail_usuario').parent().addClass('error_2');
@@ -121,55 +154,59 @@ session_start();
                     <div class="panel">
                         <div class="header_user">
                             <div class="summary_user">
-                                <h2>Agregar Psicólogo</h2>                                
+                                <h2>Editar Psicólogo</h2>                                
                             </div>
                         </div>
                         <div id="tabs">                            
                             <form action="agregarAdminPsico.php" method="post" name="form">
+                                <input type="hidden" value="<?php echo $psicologo->{"userId"};?>" id="idPsico"/>
                                 <div id="tabs-1">
                                     <p>
                                         <label>Nombre</label>
-                                        <input type="text" id="nombre" placeholder="Escribe tu nombre completo"></input>
+                                        <input type="text" id="nombre" value="<?php echo $psicologo->{"nombre"};?>" placeholder="Escribe tu nombre completo"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Apellidos</label>
-                                        <input type="text" id="apellido" placeholder="Escribe tus apellidos"></input>
+                                        <input type="text" id="apellido" value="<?php echo $psicologo->{"apellido"};?>" placeholder="Escribe tus apellidos"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Documento de identidad</label>
-                                        <input type="text" id="documento" placeholder="Escribe tu documento de identidad nacional (DNI)"></input>
+                                        <input type="text" id="documento" value="<?php echo $psicologo->{"documento"};?>" placeholder="Escribe tu documento de identidad nacional (DNI)"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Sexo</label>
                                         <select id="sexo">
-                                            <option>Seleccione su sexo</option>
-                                            <option value='M'>Hombre</option>
-                                            <option value='F'>Mujer</option>
+                                            <?php $sel=($psicologo->{"sexo"}=="")?'selected="selected"':'';?>
+                                            <option <?php echo $sel;?>>Seleccione su sexo</option>
+                                            <?php $sel=($psicologo->{"sexo"}=="M")?'selected="selected"':'';?>
+                                            <option <?php echo $sel;?> value='M'>Hombre</option>
+                                            <?php $sel=($psicologo->{"sexo"}=="F")?'selected="selected"':'';?>
+                                            <option <?php echo $sel;?> value='F'>Mujer</option>
                                         </select>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Fecha de nacimiento</label>
-                                        <input type="text" id="fechnac" placeholder="Escribe tu fecha de nacimiento  (aaaa/mm/dd)"></input>
+                                        <input type="text" id="fechnac" value="<?php echo $psicologo->{"fechnac"};?>" placeholder="Escribe tu fecha de nacimiento  (aaaa/mm/dd)"></input>
                                         <label class="help">Este campo es requerido</label>
 
                                     </p>
                                     <p>
                                         <label>Tarjeta profesional</label>
-                                        <input type="text" id="targProfe" placeholder="Registra tarjeta profesional como psicólogo"></input>
+                                        <input type="text" id="targProfe" value="<?php echo $psicologo->{"targProfe"};?>" placeholder="Registra tarjeta profesional como psicólogo"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Ubicación</label>
-                                        <input type="text" id="searchTextField" placeholder="Escribe la dirección del lugar donde vives o trabajas"></input>
+                                        <input type="text" id="searchTextField" value="<?php echo $psicologo->{"ubicacion"};?>" placeholder="Escribe la dirección del lugar donde vives o trabajas"></input>
                                         <label class="help">Este campo es requerido</label>  
                                     </p>
                                     <p>
                                         <label>Cuenta de gmail</label>
-                                        <input type="email" id="ctagmail_usuario" placeholder="Escribe tu cuenta de gmail"></input>
+                                        <input type="email" id="ctagmail_usuario" value="<?php echo $psicologo->{"ctagmail_usuario"};?>" placeholder="Escribe tu cuenta de gmail"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
@@ -292,7 +329,7 @@ session_start();
 
 
                 function validateEmailGmail(email_validate){
-                    if (/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/.test(email_validate)){
+                    if (/^((([a-zA-Z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-zA-Z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/.test(email_validate)){
 
                         var arrobaa =  email_validate.split('@');
                         var type_email =  arrobaa[1].split('.');
@@ -313,15 +350,6 @@ session_start();
                     }
                     return false;
                 }
-
-                var temp_guadado;
-                $("input[type=text],input[type=email]").keydown(function (){
-                    if(temp_guadado != null)
-                        clearTimeout(temp_guadado);
-                    if(verificarform())
-                        temp_guadado = setTimeout(registroAdmin, 3000);
-                });
-
         </script>
         <?php mysql_close($link); ?>
     </body>

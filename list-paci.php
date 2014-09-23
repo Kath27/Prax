@@ -1,9 +1,14 @@
-<?php include('config.php'); ?>
+<?php
+include('config.php');
+?>
 <?php
     session_start();
-    $sql = "SELECT documento, nombre, apellido, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, sexo FROM prax.paciente";
-    if($_SESSION["rol"]="psico"){
+    $sql = "SELECT documento, nombre, apellido, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, sexo, fecha_crea, fecha_mod FROM prax.paciente";
+    if($_SESSION["rol"]=="psico"){
         $sql.=" WHERE id_adminpsic='".$_SESSION["userId"]."'";
+    }
+    else if($_SESSION["rol"]=="admin"){
+        $sql.=" WHERE id_admin='".$_SESSION["userId"]."'";
     }
     $result = mysql_query($sql,$link)or die(exit(mysql_error($link)));       
 ?>
@@ -48,18 +53,7 @@
                 </div>
             </div>
             <div class="tootip_header">
-                <div id="profile_welcom_header_tootip">
-                    <div class="cont_avatar">
-                        <div class="avatar">
-                            <img src="img/avatar-def.jpg">
-                        </div>
-                    </div>
-                    <div class="cont_welcom">
-                        <h3>Nombre Usuario</h3>
-                        <p>usuario@usuario.com</p>
-                    </div> 
-                </div>
-                <button type="button" id="logut">Salir de la Plataforma</button>
+                <?php include("perfilHeader.php");?>
             </div>
         </header>
         <section>
@@ -70,10 +64,7 @@
                             <img src="img/avatar-def.jpg">
                         </div>
                     </div>
-                    <div class="cont_welcom">
-                        <h3>Bienvenido</h3>
-                        <p>Administrador Psicólogo</p>
-                    </div>
+                    <?php include('perfilAside.php');?>
                 </div>
                 <nav>
                     <?php include("menu.php"); ?>
@@ -87,35 +78,42 @@
                             <input class="search" id="search" type="search" placeholder="Escriba un criterio de búsqueda"></input>
                             <button class="icon-search3" data-sort="name" ></button>
                         </div>
+                        <?php if(mysql_num_rows($result)<=0) { ?>
                         <a href="indexPaciente" class="add_user">
                             <div class="cont_avatar">
                                 <div class="avatar">
                                     <img src="img/avatar-def.jpg">
                                 </div>
                             </div>
+                        
                             <div class="cont_user_list">
-                                <h2>Agregar Nuevo Paciente</h2>
-                                <div class="description_list_user">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sagittis massa vel est scelerisque, id cursus ligula elementum. Vivamus in justo ex.</div>
-                            </div>
-                        </a>
+                                <h2><?php echo "Agregar Nuevo Paciente";?></h2>
+                            </div>                          
+                       </a>                      
+                        <?php } ?>
                         <ul id="list_users">
                             <?php while ($psico = mysql_fetch_array($result)) { ?>
                                 <a class="aBloqueUsuario" href="historiaClinica?paciente=<?php echo $psico[0]; ?>">
                                     <li>
                                         <div class="cont_avatar">
                                             <div class="avatar">
-                                                <span class="status_user_list on"></span>
                                                 <img src="img/avatar-def.jpg">
                                             </div>
                                         </div>
                                         <div class="cont_user_list">
                                             <input type="hidden" id="hidcriteriosbusqueda" value="<?php echo $psico[0] ." ". $psico[1] .";". $psico[2] .";". $psico[7];?>"/>
-                                            <h2 class="name"><?php echo $psico[1] ." ". $psico[2];?></h2>
+                                            <h2 class="name"><?php echo $psico[1] ." ". $psico[2] ." - ". $psico[0];?></h2>
                                             <div class="description_list_user"><?php echo $psico[7];?></div>
+                                            <div class="description_list_user"><?php echo "Teléfono fijo: ".$psico[5]." - Teléfono movil: ".$psico[6];?></div>
+                                            <div class="description_list_user">Fecha de creación: <?php echo $psico[9];?></div>
+                                            <div class="description_list_user">Ultima actualización: <?php echo $psico[10];?></div>
+                                            
                                         </div>
                                     </li>
                                 </a>
                             <?php } ?>
+                       
+                            
                         </ul>
                     </div>
                 </div>            

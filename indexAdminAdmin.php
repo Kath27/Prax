@@ -83,18 +83,7 @@ session_start();
                 </div>
             </div>
             <div class="tootip_header">
-                <div id="profile_welcom_header_tootip">
-                    <div class="cont_avatar">
-                        <div class="avatar">
-                            <img src="img/avatar-def.jpg">
-                        </div>
-                    </div>
-                    <div class="cont_welcom">
-                        <h3>Nombre Usuario</h3>
-                        <p>usuario@usuario.com</p>
-                    </div> 
-                </div>
-                <button type="button" id="logut">Salir de la Plataforma</button>
+                <?php include("perfilHeader.php");?>
             </div>
         </header>
         <section>
@@ -105,10 +94,7 @@ session_start();
                             <img src="img/avatar-def.jpg">
                         </div>
                     </div>
-                    <div class="cont_welcom">
-                        <h3>Bienvenido</h3>
-                        <p>Administrador Admin</p>
-                    </div>
+                    <?php include('perfilAside.php');?>
                 </div>
                 <nav>
                     <?php include("menu.php"); ?>

@@ -1,6 +1,8 @@
-<?php include('config.php');?>
+<?php include('config.php');
+session_start();
+?>
 <?php
-    $sql = "SELECT nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario FROM prax.admin_psico";
+    $sql = "SELECT nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario, isActive, id_adminpsic FROM prax.admin_psico";
     $result = mysql_query($sql,$link)or die(exit(mysql_error($link)));       
 ?>
 <!DOCTYPE html>
@@ -27,6 +29,46 @@
                    }                                       
                 });
             }
+            function activarPsicologo(documento, psicoElement){
+                var activar = ($(psicoElement).hasClass("off"))? "T" : "F";
+                var http = new XMLHttpRequest();
+                    http.open("POST", "activarPsicologo", true);
+                    http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                    http.send("documento=" + documento +
+                                "&activar=" + activar
+                                );               
+                http.onreadystatechange = function(){
+                    if (http.readyState == 4 && http.status == 200) {
+                        var respuesta = JSON.parse(http.responseText);
+                        if (respuesta.estado){
+                            showNotification({
+                                message: respuesta.message,
+                                    type: "success"
+                            });
+                            
+                            if (activar == "T"){
+                                $(psicoElement).removeClass("off");
+                                $(psicoElement).addClass("on");
+                                $(psicoElement)[0].title = "Activar";
+                            }else{
+                                $(psicoElement).removeClass("on");
+                                $(psicoElement).addClass("off");
+                                $(psicoElement)[0].title = "Desactivar";
+                            }
+                        }else{
+                            showNotification({
+                                message: respuesta.message,
+                                    type: "error"
+                            });
+                        }
+                    }else if (http.readyState == 4){
+                        showNotification({
+                            message: "Ocurrio un error",
+                                    type: "error"
+                        });
+                    }
+                }
+            }
         </script>
     </head>
     <body>
@@ -44,18 +86,7 @@
                 </div>
             </div>
             <div class="tootip_header">
-                <div id="profile_welcom_header_tootip">
-                    <div class="cont_avatar">
-                        <div class="avatar">
-                            <img src="img/avatar-def.jpg">
-                        </div>
-                    </div>
-                    <div class="cont_welcom">
-                        <h3>Nombre Usuario</h3>
-                        <p>usuario@usuario.com</p>
-                    </div> 
-                </div>
-                <button type="button" id="logut">Salir de la Plataforma</button>
+                <?php include("perfilHeader.php");?>
             </div>
         </header>
         <section>
@@ -66,10 +97,7 @@
                             <img src="img/avatar-def.jpg">
                         </div>
                     </div>
-                    <div class="cont_welcom">
-                        <h3>Bienvenido</h3>
-                        <p>Administrador Admin</p>
-                    </div>
+                    <?php include('perfilAside.php');?>
                 </div>
                 <nav>
                     <?php include("menu.php"); ?>
@@ -83,6 +111,7 @@
                             <input class="search" id="search" type="search" placeholder="Escriba un criterio de búsqueda"></input>
                             <button class="icon-search3" data-sort="name" ></button>
                         </div>
+                        <?php if(mysql_num_rows($result)<=0) { ?>
                         <a href="AdminPsico" class="add_user">
                             <div class="cont_avatar">
                                 <div class="avatar">
@@ -91,26 +120,31 @@
                             </div>
                             <div class="cont_user_list">
                                 <h2>Agregar Nuevo Usuario</h2>
-                                <div class="description_list_user">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sagittis massa vel est scelerisque, id cursus ligula elementum. Vivamus in justo ex.</div>
                             </div>
                         </a>
+                        <?php } ?>
                         <ul id="list_users">
                             <?php while ($psico = mysql_fetch_array($result)) { ?>
-                                <a class="aBloqueUsuario" href="#">
-                                    <li>
-                                        <div class="cont_avatar">
-                                            <div class="avatar">
-                                                <span class="status_user_list on"></span>
-                                                <img src="img/avatar-def.jpg">
-                                            </div>
+                                <a class="aBloqueUsuario" href="edicionPsico?psicologo=<?php echo $psico[2]?>">
+                                <li class="aBloqueUsuario">
+                                    <div class="cont_avatar">
+                                        <div class="avatar">
+                                            <?php if ($psico[8] == "T"){?>
+                                                <span style="cursor: pointer" class="status_user_list on" title="Desactivar" onclick="activarPsicologo('<?php echo $psico[2] ?>', this);"></span>
+                                            <?php }
+                                            else{?>
+                                                <span style="cursor: pointer" class="status_user_list off" title="Activar" onclick="activarPsicologo('<?php echo $psico[2] ?>', this);"></span>
+                                            <?php }?>
+                                            <img src="img/avatar-def.jpg">
                                         </div>
-                                        <div class="cont_user_list">
-                                            <input type="hidden" id="hidcriteriosbusqueda" value="<?php echo $psico[0] ." ". $psico[1] .";". $psico[2] .";". $psico[7];?>"/>
-                                            <h2 class="name"><?php echo $psico[0] ." ". $psico[1];?></h2>
-                                            <div class="description_list_user"><?php echo $psico[7];?></div>
-                                        </div>
-                                    </li>
-                                </a>
+                                    </div>
+                                    <div class="cont_user_list">
+                                        <input type="hidden" id="hidcriteriosbusqueda" value="<?php echo $psico[0] ." ". $psico[1] .";". $psico[2] .";". $psico[7];?>"/>
+                                        <h2 class="name"><?php echo $psico[0] ." ". $psico[1];?></h2>
+                                        <div class="description_list_user"><?php echo $psico[7];?></div>
+                                    </div>
+                                </li>
+                                <a/>
                             <?php } ?>
                         </ul>
                     </div>
