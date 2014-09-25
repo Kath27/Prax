@@ -1,4 +1,12 @@
 <?php
+use google\appengine\api\users\User;
+use google\appengine\api\users\UserService;
+
+$user = UserService::getCurrentUser();
+if ($user) {
+    header('Location: ' . UserService::createLogoutURL($_SERVER['REQUEST_URI']));
+}
+
 include('config.php');
 session_start();
 
@@ -15,31 +23,13 @@ session_start();
         <link href="css/jquery_notification.css" type="text/css" rel="stylesheet"/>
     </head>
     <body>
-          <header>
-            <div id="logo">
-                <img src="img/logo.png" title="Prax" alt="Prax">
-                <span>Assist</span>
-            </div>
-            <button type="button" id="open_close_aside" class="icon-grid"></button>
-            <div id="profile_welcom_header">
-                <div class="cont_avatar">
-                    <div class="avatar">
-                        <img src="img/avatar-def.jpg">
-                    </div>
-                </div>
-            </div>
-            <div class="tootip_header">
-                <?php include("perfilHeader.php");?>
-            </div>
-        </header>
         <section>
             <article>
                 <div class="row">
                     <div class="panel">
                         <div class="header_user">
                             <div class="summary_user">
-                                <h2>Tu pre inscripción ha sido realizada con éxito, cuando sea activado el sistema te enviaremos un correo electrónico.</h2> 
-                                    <h2> Fecha prevista de activación: Septiembre de 2014.</h2>                                
+                                <h2>El usuario con el que ha intentado acceder se encuentra inactivo.</h2>                                
                             </div>
                         </div>
                         

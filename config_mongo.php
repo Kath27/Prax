@@ -21,7 +21,7 @@
     }
     
     function guardarHistoria($docPaciente,$motivo="",$evaluacionMedico="", $evaluacionFami="", $evaluacionPsico="", $evaluacionNeuro="", $diagnostico="", $tratamiento=""){
-        $query = urlencode('{"id_paciente" : ' . $docPaciente . '}');
+        $query = urlencode('{"id_paciente":"' . $docPaciente . '"}');
         $url = "https://api.mongolab.com/api/1/databases/prax/collections/historia_clinica?apiKey=" . getMongoApiKey() . "&q=" . $query;
         
         $update = new stdClass();

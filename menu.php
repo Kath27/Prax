@@ -7,7 +7,7 @@
     <?php if ($rol == "admin"){
         $class=(stristr($url, "list-user"))?'class="active"':"";
          ?>
-        <a href="list-user"><li <?php echo $class;?>>Lista de Psicólogo </li></a>
+        <a href="list-user"><li <?php echo $class;?>>Lista de Psicólogos </li></a>
     <?php } ?>
     
     <?php if ($rol=="psico" || $rol == "admin"){ 
@@ -17,10 +17,23 @@
     <?php } ?>
     
     <?php if ($rol == "admin"){ 
+        $class=(stristr($url, "list-admin"))?'class="active"':"";
+        ?>
+    <a href="list-admin"><li <?php echo $class;?>>Lista Administradores </li></a>
+    <?php } ?>
+    
+    <?php if ($rol == "admin"){
+        $class=(stristr($url, "AdminAdmin"))?'class="active"':"";
+         ?>
+    <a href="AdminAdmin"><li <?php echo $class;?>>Agregar Administrador</li></a>
+    <?php } ?>
+    
+    <?php if ($rol == "admin"){ 
         $class=(stristr($url, "AdminPsico"))?'class="active"':"";
         ?>
     <a href="AdminPsico"><li <?php echo $class;?>>Agregar Psicólogo </li></a>
     <?php } ?>
+    
     
     <?php if ($rol == "psico" || $rol == "admin"){
         $class=(stristr($url, "indexPaciente"))?'class="active"':"";

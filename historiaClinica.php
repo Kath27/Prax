@@ -3,8 +3,15 @@ include('config.php');
 include('config_mongo.php');
 include('utilidades.php');
 session_start();
+if (!isset($_SESSION["userId"])){ header('Location: /'); }
 
 $id_paciente = $_GET["paciente"];
+$idAdmin = ($_SESSION["rol"]=="admin")?"id_admin":"id_adminpsic";
+$sql = "SELECT id_paciente FROM prax.paciente WHERE documento='".$id_paciente."' AND ".$idAdmin."=".$_SESSION["userId"];
+$result = mysql_query($sql, $link)or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
+if(mysql_num_rows($result)==0){
+    header('Location: /');
+}
 
 $historia = getHistoriaClinica($id_paciente);
 $historia = $historia[0];
@@ -12,7 +19,7 @@ $historia = $historia[0];
 $anotaciones = getAnotaciones($id_paciente);
 
 
-$sql = "SELECT nombre, apellido, documento, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, id_paciente FROM prax.paciente WHERE documento='".$id_paciente."'";
+$sql = "SELECT nombre, apellido, documento, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, id_paciente, fecha_mod FROM prax.paciente WHERE documento='".$id_paciente."'";
 $result = mysql_query($sql, $link) or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
 $paciente = mysql_fetch_row($result);
 
@@ -44,7 +51,6 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                 var evaluacionNeuro = encodeURI(document.getElementById("evaluacionNeuro").value);
                 var diagnostico = encodeURI(document.getElementById("diagnostico").value);
                 var tratamiento = encodeURI(document.getElementById("tratamiento").value);
-                var anotaciones = encodeURI(document.getElementById("anotaciones").value.trim());
                 var nombre = encodeURI(document.getElementById("nombre").value);
                 var apellido = encodeURI(document.getElementById("apellido").value);
                 var documento = encodeURI(document.getElementById("documento").value);
@@ -65,7 +71,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                 var http = new XMLHttpRequest();
                     http.open("POST", "AgregarHistoria", true);
                     http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-                    http.send("id_paciente=<?php echo $id_paciente; ?>" + 
+                    http.send("id_paciente=<?php echo $paciente[8]; ?>" + 
                                 "&motivo=" + motivo +
                                 "&evaluacionMedico=" + evaluacionMedico + 
                                 "&evaluacionFami=" + evaluacionFami + 
@@ -73,7 +79,6 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                 "&evaluacionNeuro=" + evaluacionNeuro + 
                                 "&diagnostico=" + diagnostico + 
                                 "&tratamiento=" + tratamiento + 
-                                "&anotaciones=" + anotaciones +
                                 "&nombre=" + nombre +
                                 "&apellido=" + apellido +
                                 "&documento=" + documento +
@@ -96,10 +101,40 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                         if (http.readyState == 4 && http.status == 200) {
                             var respuesta = JSON.parse(http.responseText);
                             if (respuesta.estado){
+                                $("#guardado").html("Actualizado: " + respuesta.objResponse.updated);
+                                $("#nombreCabeza").html($("#nombre").val()+" "+$("#apellido").val());
+                                $("#mailCabeza").html($("#mail").val());
+                            }else{
                                 showNotification({
                                     message: respuesta.message,
-                                    type: "success"
+                                    type: "error"
                                 });
+                            }
+                        }else if (http.readyState == 4){
+                            showNotification({
+                                message: "Ocurrio un error",
+                                type: "error"
+                            });
+                        }
+                    };        
+                }
+                function guardarAnotacion(){
+                    
+                    var anotaciones = encodeURI(document.getElementById("anotaciones").value);
+                    var documento = encodeURI(document.getElementById("documento").value);
+                    
+                    var http = new XMLHttpRequest();
+                    http.open("POST", "AgregarHistoria", true);
+                    http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                    http.send("id_paciente=<?php echo $paciente[8]; ?>" + 
+                                "&anotaciones=" + anotaciones +
+                                "&documento=" + documento 
+                                ); 
+                    http.onreadystatechange = function(){
+                        if (http.readyState == 4 && http.status == 200) {
+                            var respuesta = JSON.parse(http.responseText);
+                            if (respuesta.estado){
+                                $("#guardado").html("Actualizado: " + respuesta.objResponse.updated);
                                 
                                 var anotaciones = document.getElementById("anotaciones").value;
                                 if (anotaciones == null || anotaciones.trim() == "") return;
@@ -121,6 +156,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                         }
                     };        
                 }
+                                
                 function crearAnotacion(anotacion,anotId,fecha){
                     var fila = document.createElement("tr");
                     var anot = document.createElement("td"); 
@@ -169,12 +205,9 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                         if (http.readyState == 4 && http.status == 200) {
                             var respuesta = JSON.parse(http.responseText);
                             if (respuesta.estado){
-                                showNotification({
-                                    message: respuesta.message,
-                                    type: "success"
-                                });
                                 label.html(anotacion.val());
                                 label.parent().next().next().html(respuesta.objResponse);
+                                label.parent().find(".SavingIcon").css("display","none");
                             }else{
                                 showNotification({
                                     message: respuesta.message,
@@ -235,8 +268,10 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                 </div>
                             </div>
                             <div class="summary_user">
-                                <h2><?php echo($paciente[0]);?> <?php echo($paciente[1]);?></h2>
-                                <p class="email_sumary"><?php echo($paciente[7]);?></p>
+                                <h2 id="nombreCabeza"><?php echo($paciente[0]);?> <?php echo($paciente[1]);?></h2>
+                                <p id="mailCabeza" class="email_sumary"><?php echo($paciente[7]);?></p>
+                                <div id="guardado">Actualizado: <?php echo $paciente[9]; ?></div>
+                                <div id="guardado">Por confidencialidad con tu paciente evita registrar información sensible donde se identifiquen personas o hechos.</div>
                             </div>
                         </div>
                         <div id="tabs"> 
@@ -247,7 +282,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                 <li><a href="#tabs-4">Diagnóstico</a></li>
                                 <li><a href="#tabs-5">Tratamiento</a></li>
                                 <li><a href="#tabs-6">Anotaciones</a></li>
-                                <li><a href="#tabs-7">Datos de contacto</a></li>
+                                <li><a href="#tabs-7">Datos de persona de contacto</a></li>
                             </ul>
                             <form action="agregarAdminPsico.php" method="post" name="form">
                                 <div id="tabs-1">
@@ -265,7 +300,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                     </p>
                                     <p>
                                         <label>Fecha de nacimiento</label>
-                                        <input type="text" id="fechanac"value= "<?php echo($paciente[3]);?>"/>
+                                        <input type="text" id="fechanac" value= "<?php echo($paciente[3]);?>"/>
                                     </p>
                                     <p>
                                         <label>Ubicación</label>
@@ -312,6 +347,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                 </div>
                                 <div id="tabs-6">
                                     <textarea id="anotaciones"></textarea>
+                                    <p><a class="button" onclick="guardarAnotacion()">Guardar anotación</a> 
                                     <div class="CSSTableGenerator">
                                         <table id="tbl_anotaciones">
                                             <tr>
@@ -327,6 +363,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                                             <label class="lbledita"><?php echo $anotacion->{"anotacion"}; ?></label>
                                                             <textarea class="editanotacion" style="display: none; width: 95%;"><?php echo $anotacion->{"anotacion"}; ?></textarea>
                                                             <input type="hidden" value="<?php echo $anotacion->{"_id"}->{"\$oid"}; ?>"/>
+                                                            <div class="SavingIcon" style="display: none">Guardando...</div>
                                                         </td>
                                                         <td style="width: 25%"><?php echo $anotacion->{"fecha_creac"}; ?></td>
                                                         <td style="width: 25%"><?php echo $anotacion->{"fecha_mod"}; ?></td>
@@ -340,31 +377,31 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                 <div id="tabs-7">
                                     <p>
                                         <label>Nombre</label>
-                                        <input type='text' name='nombre_cont' id='nombre_cont' value= "<?php echo($paciente_contact[0]);?>"/>
+                                        <input type='text' name='nombre_cont' id='nombre_cont' placeholder="Escriba el nombre completo de la persona de contacto" value= "<?php echo($paciente_contact[0]);?>"/>
                                     </p>
                                     <p>
                                         <label>Apellidos</label>
-                                        <input type="text" id="apellido_cont"value= "<?php echo($paciente_contact[1]);?>"/>
+                                        <input type="text" id="apellido_cont" placeholder="Escriba el apelldio de la persona de contacto" value= "<?php echo($paciente_contact[1]);?>"/>
                                     </p>
                                     <p>
                                         <label>Documento de identidad</label>
-                                        <input type="text" id="documento_cont"value= "<?php echo($paciente_contact[2]);?>"/>
+                                        <input type="text" id="documento_cont" placeholder="Escriba el documento de identidad nacional de la persona de contacto (DNI)" value=  "<?php echo($paciente_contact[2]);?>"/>
                                     </p>
                                     <p>
                                         <label>Fecha de nacimiento</label>
-                                        <input type="text" id="fechanac_cont" value="<?php echo($paciente_contact[3]);?>" placeholder=""/>
+                                        <input type="text" id="fechanac_cont" placeholder="Escriba su fecha de nacimiento en el formato dd / mm / aaaa" value="<?php echo($paciente_contact[3]);?>"/>
                                     </p>
                                     <p>
                                         <label>Ubicación</label>
-                                        <input type="text" id="ubicacion_cont" value="<?php echo($paciente_contact[4]);?>" placeholder=""/>
+                                        <input type="text" id="ubicacion_cont" placeholder="Escriba el lugar de residencia de la persona de contacto" value="<?php echo($paciente_contact[4]);?>"/>
                                     </p>
                                     <p>
                                         <label>Teléfono fíjo</label>
-                                        <input type="text" id="telFijo_cont"value= "<?php echo($paciente_contact[5]);?>"/>
+                                        <input type="text" id="telFijo_cont" placeholder="Escriba el número de teléfono + código de país y área" value= "<?php echo($paciente_contact[5]);?>"/>
                                     </p>
                                     <p>
                                         <label>Teléfono movil</label>
-                                        <input type="text" id="telMovil_cont"value= "<?php echo($paciente_contact[6]);?>"/>
+                                        <input type="text" id="telMovil_cont" placeholder="Escriba el número de teléfono + código de país y área" value= "<?php echo($paciente_contact[6]);?>"/>
                                     </p>
                                     <p>
                                         <label>Tipo de relación</label>
@@ -375,14 +412,14 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                                     if ($tipo_relacion[0] == $paciente_contact[8])
                                                         $check = 'selected="selected"';
                                                 ?>
-                                                <option <?php echo $check; ?> value='<?php echo($tipo_relacion[0]);?>'><?php echo($tipo_relacion[1]);?></option>
+                                                <option <?php echo $check; ?> placeholder="" value='<?php echo($tipo_relacion[0]);?>'><?php echo($tipo_relacion[1]);?></option>
                                             <?php }?>
                                         </select>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Correo electronico</label>
-                                        <input type="text" id="mail_cont"value= "<?php echo($paciente_contact[7]);?>"/>
+                                        <input type="text" id="mail_cont" placeholder="Escriba la dirección de email de la persona de contacto" value= "<?php echo($paciente_contact[7]);?>"/>
                                     </p>
                                 </div>    
                             </form>
@@ -419,7 +456,8 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                     var input = document.getElementById('ubicacion_cont');
                     if (input) new google.maps.places.Autocomplete(input);
                 },100);
-                
+                $('#documento,#documento_cont,#telFijo,#telMovil,#telFijo_cont,#telMovil_cont').filter_input({regex:'[0-9]'});
+                $('#fechanac,#fechanac_cont').filter_input({regex:'[]'});
             });
             
 
@@ -429,7 +467,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                     var apellido = $.trim($('#apellido').val());
                     var doc = $.trim($('#documento').val());
                     var sexo = $.trim($('#sexo').val());
-                    var fechanac = $.trim($('#fechnac').val());
+                    var fechanac = $.trim($('#fechanac').val());
                     var tarjeProf = $.trim($('#targProfe').val());
                     var ubicac = $.trim($('#searchTextField').val());
                     validate_required = true;
@@ -535,9 +573,15 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                     if($(this).hasClass("editanotacion")){
                         return;
                     }
+                    if ($(this).attr("id") == "anotaciones") return;
+                    
                     if(temp_guadado != null)
                         clearTimeout(temp_guadado);
-                    temp_guadado = setTimeout(registroHistoria, 3000);
+                        
+                    temp_guadado = setTimeout(function(){
+                        registroHistoria();
+                        $("#guardado").html("Guardando...");
+                    }, 3000);
                 });
                 
                 function prepararAnotacionesParaEdicion(){
@@ -548,6 +592,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                         var lbl = $(this).find("label");
                         var txt = $(this).find("textarea");
                         var hdn = $(this).find("input").val();
+                        var saving = $(this).find(".SavingIcon");
                         
                         lbl.hide();
                         txt.show();
@@ -556,8 +601,9 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                             if(temp_guadado != null)
                                 clearTimeout(temp_guadado);
                             temp_guadado = setTimeout(function(){
+                                saving.css("display","inline-block");
                                 actualizarAnotacion(lbl,txt,hdn);
-                            }, 3000);
+                            }, 2000);
                         });
                         
                         event.stopPropagation();

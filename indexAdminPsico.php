@@ -85,6 +85,7 @@ session_start();
         </script>
     </head>
     <body>
+        <?php if(isset($_SESSION["userId"])){?>
           <header>
             <div id="logo">
                 <img src="img/logo.png" title="Prax" alt="Prax">
@@ -98,24 +99,27 @@ session_start();
                     </div>
                 </div>
             </div>
-            <div class="tootip_header">
-                <?php include("perfilHeader.php");?>
+            <div class="tootip_header">                
+                   <?php include("perfilHeader.php");?>
             </div>
         </header>
+        <?php } ?>
         <section>
+            <?php if(isset($_SESSION["userId"])){?>
             <aside>
                 <div id="profile_welcom">
                     <div class="cont_avatar">
                         <div class="avatar">
                             <img src="img/avatar-def.jpg">
                         </div>
-                    </div>
-                    <?php include('perfilAside.php');?>
+                    </div>                    
+                     <?php include('perfilAside.php');?>
                 </div>
-                <nav>
-                    <?php include("menu.php"); ?>
+                <nav>                    
+                    <?php include("menu.php");?>
                 </nav>
             </aside>
+            <?php }?>
             <article>
                 <div class="row">
                     <div class="panel">
@@ -314,13 +318,6 @@ session_start();
                     return false;
                 }
 
-                var temp_guadado;
-                $("input[type=text],input[type=email]").keydown(function (){
-                    if(temp_guadado != null)
-                        clearTimeout(temp_guadado);
-                    if(verificarform())
-                        temp_guadado = setTimeout(registroAdmin, 3000);
-                });
 
         </script>
         <?php mysql_close($link); ?>

@@ -1,17 +1,9 @@
-<?php
-include('config.php');
+<?php include('config.php');
+session_start();
+if (!isset($_SESSION["userId"]) || $_SESSION["rol"] != "admin"){ header('Location: /'); }
 ?>
 <?php
-    session_start();
-    if (!isset($_SESSION["userId"])){ header('Location: /'); }
-    
-    $sql = "SELECT documento, nombre, apellido, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, sexo, fecha_crea, fecha_mod FROM prax.paciente";
-    if($_SESSION["rol"]=="psico"){
-        $sql.=" WHERE id_adminpsic='".$_SESSION["userId"]."'";
-    }
-    else if($_SESSION["rol"]=="admin"){
-        $sql.=" WHERE id_admin='".$_SESSION["userId"]."'";
-    }
+    $sql = "SELECT nombre, apellido, documento, ctagmail_usuario, isActive FROM prax.admin_admin";
     $result = mysql_query($sql,$link)or die(exit(mysql_error($link)));       
 ?>
 <!DOCTYPE html>
@@ -38,10 +30,52 @@ include('config.php');
                    }                                       
                 });
             }
+            function activarAdmin(event, documento, psicoElement){
+                var activar = ($(psicoElement).hasClass("off"))? "T" : "F";
+                var http = new XMLHttpRequest();
+                    http.open("POST", "activarAdmin", true);
+                    http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                    http.send("documento=" + documento +
+                                "&activar=" + activar
+                                );               
+                http.onreadystatechange = function(){
+                    if (http.readyState == 4 && http.status == 200) {
+                        var respuesta = JSON.parse(http.responseText);
+                        if (respuesta.estado){
+                            showNotification({
+                                message: respuesta.message,
+                                    type: "success"
+                            });
+                            
+                            if (activar == "T"){
+                                $(psicoElement).removeClass("off");
+                                $(psicoElement).addClass("on");
+                                $(psicoElement)[0].title = "Activar";
+                            }else{
+                                $(psicoElement).removeClass("on");
+                                $(psicoElement).addClass("off");
+                                $(psicoElement)[0].title = "Desactivar";
+                            }
+                        }else{
+                            showNotification({
+                                message: respuesta.message,
+                                    type: "error"
+                            });
+                        }
+                    }else if (http.readyState == 4){
+                        showNotification({
+                            message: "Ocurrio un error",
+                                    type: "error"
+                        });
+                    }
+                }
+                
+                event.stopPropagation();
+            }
         </script>
     </head>
     <body>
-          <header>
+        <header>
             <div id="logo">
                 <img src="img/logo.png" title="Prax" alt="Prax">
                 <span>Assist</span>
@@ -75,47 +109,44 @@ include('config.php');
             <article>
                 <div class="row">
                     <div class="panel" id="cosa">
-                        <h2 class="title_panel">Lista de Pacientes</h2>
+                        <h2 class="title_panel">Lista de Administradores</h2>
                         <div class="cont_search_user">
                             <input class="search" id="search" type="search" placeholder="Escriba un criterio de búsqueda"></input>
                             <button class="icon-search3" data-sort="name" ></button>
                         </div>
                         <?php if(mysql_num_rows($result)<=0) { ?>
-                        <a href="indexPaciente" class="add_user">
+                        <a href="AdminPsico" class="add_user">
                             <div class="cont_avatar">
                                 <div class="avatar">
                                     <img src="img/avatar-def.jpg">
                                 </div>
                             </div>
-                        
                             <div class="cont_user_list">
-                                <h2><?php echo "Agregar Nuevo Paciente";?></h2>
-                            </div>                          
-                       </a>                      
+                                <h2>Agregar Nuevo Administrador</h2>
+                            </div>
+                        </a>
                         <?php } ?>
                         <ul id="list_users">
                             <?php while ($psico = mysql_fetch_array($result)) { ?>
-                                <a class="aBloqueUsuario" href="historiaClinica?paciente=<?php echo $psico[0]; ?>">
-                                    <li>
+                                    <li class="aBloqueUsuario">
                                         <div class="cont_avatar">
                                             <div class="avatar">
+                                                <?php if ($psico[4] == "T"){?>
+                                                    <span style="cursor: pointer" class="status_user_list on" title="Desactivar" onclick="activarAdmin(event, '<?php echo $psico[2] ?>', this);"></span>
+                                                <?php }
+                                                else{?>
+                                                    <span style="cursor: pointer" class="status_user_list off" title="Activar" onclick="activarAdmin(event, '<?php echo $psico[2] ?>', this);"></span>
+                                                <?php }?>
                                                 <img src="img/avatar-def.jpg">
                                             </div>
                                         </div>
                                         <div class="cont_user_list">
-                                            <input type="hidden" id="hidcriteriosbusqueda" value="<?php echo $psico[0] ." ". $psico[1] .";". $psico[2] .";". $psico[7];?>"/>
-                                            <h2 class="name"><?php echo $psico[1] ." ". $psico[2] ." - ". $psico[0];?></h2>
-                                            <div class="description_list_user"><?php echo $psico[7];?></div>
-                                            <div class="description_list_user"><?php echo "Teléfono fijo: ".$psico[5]." - Teléfono movil: ".$psico[6];?></div>
-                                            <div class="description_list_user">Fecha de creación: <?php echo $psico[9];?></div>
-                                            <div class="description_list_user">Ultima actualización: <?php echo $psico[10];?></div>
-                                            
+                                            <input type="hidden" id="hidcriteriosbusqueda" value="<?php echo $psico[0] ." ". $psico[1] .";". $psico[2] .";". $psico[3];?>"/>
+                                            <h2 class="name"><?php echo $psico[0] ." ". $psico[1];?></h2>
+                                            <div class="description_list_user"><?php echo $psico[3];?></div>
                                         </div>
                                     </li>
-                                </a>
                             <?php } ?>
-                       
-                            
                         </ul>
                     </div>
                 </div>            

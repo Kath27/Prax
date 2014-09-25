@@ -3,6 +3,7 @@ include ("config.php");
 include ("utilidades.php");
 include("config_mongo.php");
 session_start();
+if (!isset($_SESSION["userId"])){ header('Location: /'); }
 
     // Verificamos que no alla ningun dato sin rellenar.
     if(!empty($_POST['anotacion']) && !empty($_POST['id_anotacion']))

@@ -15,13 +15,13 @@ if ($user) {
   $email = $user->getEmail();
   include("config.php");
   $rol = "admin";
-  $sql = "SELECT documento, nombre, apellido, ctagmail_usuario, id_admin FROM prax.admin_admin WHERE ctagmail_usuario='".$email."'";
+  $sql = "SELECT documento, nombre, apellido, ctagmail_usuario, id_admin, isActive FROM prax.admin_admin WHERE ctagmail_usuario='".$email."'";
   $result = mysql_query($sql,$link)or die(exit(mysql_error($link)));
   
   $userId =-1;
   if(mysql_num_rows($result)==0){
       $rol = "psico";
-      $sql = "SELECT nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario, id_adminpsic FROM prax.admin_psico WHERE ctagmail_usuario='".$email."'";
+      $sql = "SELECT nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario, id_adminpsic, isActive FROM prax.admin_psico WHERE ctagmail_usuario='".$email."'";
       $result = mysql_query($sql,$link)or die(exit(mysql_error($link)));
       if(mysql_num_rows($result)==0){
           $sql="INSERT INTO prax.admin_psico (nombre,ctagmail_usuario) values ('".$user->getNickname()."','".$user->getEmail()."')";
@@ -43,6 +43,10 @@ if ($user) {
   
   if($rol=="admin"){
     $admin = mysql_fetch_row($result);  
+    if($admin[5]=="F"){
+        header('Location: '.'/userInactivo');
+        exit;
+    }
     session_start(); 
     $_SESSION["googleUserId"] = $user->getUserId();  
     $_SESSION["documento"] = $admin[0];
@@ -55,6 +59,10 @@ if ($user) {
   }
   else if($rol == "psico"){
     $psico = mysql_fetch_row($result);
+    if($psico[9]=="F"){
+        header('Location: '.'/userInactivo');
+        exit;
+    }
     session_start();    
     $_SESSION["googleUserId"] = $user->getUserId();
     $_SESSION["nombre"] = $psico[0];

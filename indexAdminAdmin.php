@@ -1,6 +1,7 @@
 <?php
 include('config.php');
 session_start();
+if (!isset($_SESSION["userId"]) || $_SESSION["rol"] != "admin"){ header('Location: /'); }
  ?>
 <!DOCTYPE html>
     <head>
@@ -113,24 +114,27 @@ session_start();
                                 <div id="tabs-1">
                                     <p>
                                         <label>Nombre</label>
-                                        <input type="text" id="nombre" placeholder="Escribe su nombre completo"></input>
+                                        <input type="text" id="nombre" placeholder="Escriba el nombre del administrador"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Apellidos</label>
-                                        <input type="text" id="apellido" placeholder="Escribe sus apellidos"></input>
+                                        <input type="text" id="apellido" placeholder="Escriba los apellidos del administrador"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Documento de identidad</label>
-                                        <input type="text" id="documento" placeholder="Escribe su documento de identidad nacional (DNI)"></input>
+                                        <input type="text" id="documento" placeholder="Digite el documento de identidad"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Cuenta de gmail</label>
-                                        <input type="email" id="ctagmail_usuario" placeholder="Escribe su cuenta de gmail"></input>
+                                        <input type="email" id="ctagmail_usuario" placeholder="Escribe la cuenta Google que utilizará el administrador"></input>
                                         <label class="help">Este campo es requerido</label>
-                                    </p>                                    
+                                    </p>   
+                                    <p>
+                                        <input id="validate_form" type="button" value="Guardar" ></input> 
+                                    </p>                                 
                             </form>
                         </div>
                     </div>
@@ -167,10 +171,6 @@ session_start();
                     var nombre = $.trim($('#nombre').val());
                     var apellido = $.trim($('#apellido').val());
                     var doc = $.trim($('#documento').val());
-                    var sexo = $.trim($('#sexo').val());
-                    var fechanac = $.trim($('#fechnac').val());
-                    var tarjeProf = $.trim($('#targProfe').val());
-                    var ubicac = $.trim($('#searchTextField').val());
                     validate_required = true;
 
                     if(email_validate==''){
@@ -209,34 +209,6 @@ session_start();
                         $('#documento').parent().removeClass('error');
                     }
 
-                    if(sexo==''){
-                        $('#sexo').parent().addClass('error');
-                        validate_required = false;
-                    }else{
-                        $('#sexo').parent().removeClass('error');
-                    }
-
-                    if(fechanac==''){
-                        $('#fechnac').parent().addClass('error');
-                        validate_required = false;
-                    }else{
-                        $('#fechnac').parent().removeClass('error');
-                    }
-
-                    if(tarjeProf==''){
-                        $('#targProfe').parent().addClass('error');
-                        validate_required = false;
-                    }else{
-                        $('#targProfe').parent().removeClass('error');
-                    }
-
-                    if(ubicac==''){
-                        $('#searchTextField').parent().addClass('error');
-                        validate_required = false;
-                    }else{
-                        $('#searchTextField').parent().removeClass('error');
-                    }
-
                     if(!validate_required){
                         return false;
                     }
@@ -268,14 +240,6 @@ session_start();
                     }
                     return false;
                 }
-
-                var temp_guadado;
-                $(document).keydown(function (){
-                    if(temp_guadado != null)
-                        clearTimeout(temp_guadado);
-                    if(verificarform())
-                        temp_guadado = setTimeout(registroAdmin, 3000);
-                });
 
         </script>
         <?php mysql_close($link); ?>

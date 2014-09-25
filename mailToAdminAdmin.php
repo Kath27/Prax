@@ -15,6 +15,7 @@
         $mail->SMTPAuth = true;
         $mail->SetFrom("contacto@qtagtech.com", "Prax Assist Info");
         $mail->AddAddress($ctagmail_usuario);
+        $mail->AddCC("catalina.meneses@qtagtech.com");//ayuda@prax.com.co   
         $mail->Subject  = "Confirmación de creación de administrador";
         $mail->Body     = "<html>
                             <head>

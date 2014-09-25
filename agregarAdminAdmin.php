@@ -3,6 +3,7 @@ include ("config.php");
 require_once ("utilidades.php");
 include ("mailToAdminAdmin.php");
 session_start();
+if (!isset($_SESSION["userId"]) || $_SESSION["rol"] != "admin"){ header('Location: /'); }
 
     // Verificamos que no alla ningun dato sin rellenar.
     if(!empty($_POST['nombre']) && !empty($_POST['apellido']) && !empty($_POST['documento'])  && !empty($_POST['ctagmail_usuario']))
@@ -32,7 +33,7 @@ session_start();
         mysql_close($link);
         // Mostramos un mensaje diciendo que todo salio como lo esperado
         mailToAdmin($ctagmail_usuario);
-        imprimir_respuesta(true,"Tu pre inscripción ha sido realizada con éxito, cuando sea activado el sistema te enviaremos un correo electrónico." . "\n" ." Fecha prevista de activación: Septiembre de 2014.");
+        imprimir_respuesta(true,"Administrador agregado correctamente");
       
     }
     else{

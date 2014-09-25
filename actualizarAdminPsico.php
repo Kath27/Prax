@@ -2,6 +2,7 @@
 include ("config.php");
 include ("utilidades.php");
 session_start();
+if (!isset($_SESSION["userId"])){ header('Location: /'); }
 
     // Verificamos que no alla ningun dato sin rellenar.
     if(!empty($_POST['nombre']) && !empty($_POST['apellido']) && !empty($_POST['documento']) && !empty($_POST['sexo']) && !empty($_POST['fechnac']) && !empty($_POST['targProfe']) && !empty($_POST['ubicacion']) && !empty($_POST['ctagmail_usuario']))
@@ -15,16 +16,20 @@ session_start();
         $targProfe = htmlentities($_POST['targProfe']);
         $ubicacion = htmlentities($_POST['ubicacion']);
         $ctagmail_usuario = htmlentities($_POST['ctagmail_usuario']);
+        $isActive=$_POST["isActive"];
         $idPsico = $_POST['idPsico'];
         
 
         if (!filter_var($ctagmail_usuario, FILTER_VALIDATE_EMAIL)) {
             imprimir_respuesta(false,"Esta dirección de correo ($ctagmail_usuario) no es válida.","ErrorCorreo");
         }
-
+        /*$dominio=substr($ctagmail_usuario,strpos($ctagmail_usuario,"@")+1);
+        if(!dominioEsGmail($dominio)){
+            imprimir_respuesta(false,"Esta direccion de correo ".$ctagmail_usuario."no es una cuenta de google","ErrorCorreo");
+        }*/
          // Insertamos los datos en la base de datos, si da algun error lo muestra. 
         $sql = "UPDATE prax.admin_psico SET nombre='".$nombre."',apellido='".$apellido."',documento='".$documento."',sexo='".$sexo."',fechnac='".$fechnac.
-        "',targProfe='".$targProfe."',ubicacion='".$ubicacion."',ctagmail_usuario='".$ctagmail_usuario."' WHERE id_adminpsic=".$idPsico;
+        "',targProfe='".$targProfe."',ubicacion='".$ubicacion."',ctagmail_usuario='".$ctagmail_usuario."', isActive='".$isActive."' WHERE id_adminpsic=".$idPsico;
        
         mysql_query($sql,$link) or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
 

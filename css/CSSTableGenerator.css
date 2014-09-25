@@ -92,3 +92,12 @@
 .CSSTableGenerator tr:first-child td:last-child{
 	border-width:0px 0px 1px 1px;
 }
+.SavingIcon{
+	display: inline-block;
+	padding: 4px;
+	background-color: #444;
+	color: white;
+	border-radius: 7px;
+	font-size: 11px;
+	cursor: pointer;
+}

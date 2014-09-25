@@ -1,5 +1,6 @@
 <?php include('config.php');
 session_start();
+if (!isset($_SESSION["userId"]) || $_SESSION["rol"] != "admin"){ header('Location: /'); }
 ?>
 <?php
     $sql = "SELECT nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario, isActive, id_adminpsic FROM prax.admin_psico";
@@ -29,7 +30,7 @@ session_start();
                    }                                       
                 });
             }
-            function activarPsicologo(documento, psicoElement){
+            function activarPsicologo(event, documento, psicoElement){
                 var activar = ($(psicoElement).hasClass("off"))? "T" : "F";
                 var http = new XMLHttpRequest();
                     http.open("POST", "activarPsicologo", true);
@@ -68,6 +69,8 @@ session_start();
                         });
                     }
                 }
+                
+                event.stopPropagation();
             }
         </script>
     </head>
@@ -125,26 +128,26 @@ session_start();
                         <?php } ?>
                         <ul id="list_users">
                             <?php while ($psico = mysql_fetch_array($result)) { ?>
-                                <a class="aBloqueUsuario" href="edicionPsico?psicologo=<?php echo $psico[2]?>">
-                                <li class="aBloqueUsuario">
-                                    <div class="cont_avatar">
-                                        <div class="avatar">
-                                            <?php if ($psico[8] == "T"){?>
-                                                <span style="cursor: pointer" class="status_user_list on" title="Desactivar" onclick="activarPsicologo('<?php echo $psico[2] ?>', this);"></span>
-                                            <?php }
-                                            else{?>
-                                                <span style="cursor: pointer" class="status_user_list off" title="Activar" onclick="activarPsicologo('<?php echo $psico[2] ?>', this);"></span>
-                                            <?php }?>
-                                            <img src="img/avatar-def.jpg">
+                                <div class="aBloqueUsuario" onclick='location.href="edicionPsico?psicologo=<?php echo $psico[2]?>"' style="cursor: pointer">
+                                    <li class="aBloqueUsuario">
+                                        <div class="cont_avatar">
+                                            <div class="avatar">
+                                                <?php if ($psico[8] == "T"){?>
+                                                    <span style="cursor: pointer" class="status_user_list on" title="Desactivar" onclick="activarPsicologo(event, '<?php echo $psico[2] ?>', this);"></span>
+                                                <?php }
+                                                else{?>
+                                                    <span style="cursor: pointer" class="status_user_list off" title="Activar" onclick="activarPsicologo(event, '<?php echo $psico[2] ?>', this);"></span>
+                                                <?php }?>
+                                                <img src="img/avatar-def.jpg">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="cont_user_list">
-                                        <input type="hidden" id="hidcriteriosbusqueda" value="<?php echo $psico[0] ." ". $psico[1] .";". $psico[2] .";". $psico[7];?>"/>
-                                        <h2 class="name"><?php echo $psico[0] ." ". $psico[1];?></h2>
-                                        <div class="description_list_user"><?php echo $psico[7];?></div>
-                                    </div>
-                                </li>
-                                <a/>
+                                        <div class="cont_user_list">
+                                            <input type="hidden" id="hidcriteriosbusqueda" value="<?php echo $psico[0] ." ". $psico[1] .";". $psico[2] .";". $psico[7];?>"/>
+                                            <h2 class="name"><?php echo $psico[0] ." ". $psico[1];?></h2>
+                                            <div class="description_list_user"><?php echo $psico[7];?></div>
+                                        </div>
+                                    </li>
+                                </div>
                             <?php } ?>
                         </ul>
                     </div>

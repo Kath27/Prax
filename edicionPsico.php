@@ -1,6 +1,8 @@
 <?php
     include('config.php');
     session_start();
+    if (!isset($_SESSION["userId"])){ header('Location: /'); }
+    
     
     $psicologo = new stdClass();
     if($_SESSION["rol"]=="psico"){
@@ -28,6 +30,7 @@
         $psicologo->{"ubicacion"}=$psico[6];
         $psicologo->{"ctagmail_usuario"}=$psico[7];
         $psicologo->{"userId"}=$psico[9]; 
+        $psicologo->{"isActive"}=$psico[8]; 
     }
     
 ?>
@@ -52,6 +55,8 @@
                 var ubicac = encodeURI(document.getElementById("searchTextField").value);
                 var ctagmail_usuario = encodeURI(document.getElementById("ctagmail_usuario").value);
                 var idPsico = encodeURI(document.getElementById("idPsico").value);
+                var isActive = "T";
+                if($("#estado") && $("#estado").val() == "F") isActive = "F";
                 var http = new XMLHttpRequest();
                     http.open("POST", "actualizarAdminPsico", true);
                     http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
@@ -63,6 +68,7 @@
                                 "&targProfe=" + tarjeProf + 
                                 "&ubicacion=" + ubicac + 
                                 "&idPsico=" + idPsico +
+                                "&isActive=" + isActive +
                                 "&ctagmail_usuario=" + ctagmail_usuario
                                 );               
                 http.onreadystatechange = function(){
@@ -209,6 +215,17 @@
                                         <input type="email" id="ctagmail_usuario" value="<?php echo $psicologo->{"ctagmail_usuario"};?>" placeholder="Escribe tu cuenta de gmail"></input>
                                         <label class="help">Este campo es requerido</label>
                                     </p>
+                                    <?php if($_SESSION["rol"]=="admin") {?>
+                                    <p>
+                                        <label>Estado</label>
+                                        <select id="estado">
+                                            <?php $sel=($psicologo->{"isActive"}=="T")?'selected="selected"':'';?>
+                                            <option <?php echo $sel; ?> value="T">Activo</option>
+                                            <?php $sel=($psicologo->{"isActive"}=="F")?'selected="selected"':'';?>
+                                            <option <?php echo $sel; ?> value="F">Inactivo</option>
+                                        </select>
+                                    </p>
+                                    <?php }?>
                                     <p>
                                         <input id="validate_form" type="button" value="Guardar" ></input> 
                                     </p>
@@ -259,7 +276,6 @@
                         $('#ctagmail_usuario').parent().addClass('error');
                         validate_required = false;
                     }else{
-                        validate_required = false;
                         if(validateEmailGmail(email_validate)){
                            $('#ctagmail_usuario').parent().removeClass('error');
                            validate_required = true;

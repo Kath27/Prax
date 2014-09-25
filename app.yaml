@@ -17,6 +17,9 @@ handlers:
   
 - url: /bienvenida
   script: bienvenida.php
+  
+- url: /userInactivo
+  script: userInactivo.php  
 
 - url: /agregarAdminAdmin
   script: agregarAdminAdmin.php
@@ -31,7 +34,10 @@ handlers:
   script: agregarPaciente.php
   
 - url: /activarPsicologo
-  script: activarPsicologo.php  
+  script: activarPsicologo.php 
+
+- url: /activarAdmin
+  script: activarAdmin.php   
 
 - url: /config
   script: config.php
@@ -68,6 +74,9 @@ handlers:
 
 - url: /list-paci
   script: list-paci.php
+  
+- url: /list-admin
+  script: list-admin.php
 
 - url: /historiaClinica
   script: historiaClinica.php
@@ -98,5 +107,8 @@ handlers:
 
 - url: /jquery
   static_dir: jquery
+  
+- url: /fonts
+  static_dir: fonts
   
 
