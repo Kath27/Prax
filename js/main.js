@@ -30,11 +30,12 @@ $( "#fechnac,#fechanac,#fechanac_cont" ).datepicker({
 });
 //Tooltip//
 $("#profile_welcom_header").mouseenter(function(){
-    $(".tootip_header").fadeToggle(400);
+	$(".tootip_header").fadeIn(400);
 });
-$("#profile_welcom_header").mouseout(function(){
-    $(".tootip_header").fadeToggle(400);
+$("header").mouseleave(function(){
+	$(".tootip_header").fadeOut(400);
 });
+
 //Bloqueo caracteres//
 $().ready(function(){
     $('#documento,#documento_cont').filter_input({regex:'[0-9]'});
