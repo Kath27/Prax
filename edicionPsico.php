@@ -79,9 +79,8 @@
                             message: respuesta.message,
                                 type: "success"
                         });
-                        setTimeout(function(){
-                            location.reload();
-                        },100);
+                        $("#perfilNombre").html($("#nombre").val()+" " + $("#apellido").val());
+                        $("#perfilGmail").html($("#ctagmail_usuario").val());
                     }else{
                         if(respuesta.codigoerror=="ErrorCorreo")
                             $('#ctagmail_usuario').parent().addClass('error_2');
@@ -160,7 +159,7 @@
                     <div class="panel">
                         <div class="header_user">
                             <div class="summary_user">
-                                <h2>Editar Psicólogo</h2>                                
+                                <h2>Editar perfil</h2>                                
                             </div>
                         </div>
                         <div id="tabs">                            

@@ -29,7 +29,10 @@ $( "#fechnac,#fechanac,#fechanac_cont" ).datepicker({
     dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
 });
 //Tooltip//
-$("#profile_welcom_header").click(function(){
+$("#profile_welcom_header").mouseenter(function(){
+    $(".tootip_header").fadeToggle(400);
+});
+$("#profile_welcom_header").mouseout(function(){
     $(".tootip_header").fadeToggle(400);
 });
 //Bloqueo caracteres//

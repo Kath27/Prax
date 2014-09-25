@@ -60,7 +60,7 @@ $pdf->SetFont('dejavusans', '', 14, '', true);
 
 // add a page
 $pdf->AddPage();
-$pdf->Image('images/logo45.png', 150, 5, 40, 20, 'PNG', '', '', false, 150, '', false, false, 1, false, false, false);
+$pdf->Image('images/logoTest.png', 150, 5, 40, 20, 'PNG', '', '', false, 150, '', false, false, 1, false, false, false);
 
 // Titulo
 $txTitulo=<<<EOD

@@ -40,6 +40,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/font.css">
         <link href="css/jquery_notification.css" type="text/css" rel="stylesheet"/>
         <link href="css/CSSTableGenerator.css" type="text/css" rel="stylesheet"/>
         <script type="text/javascript" charset="utf-8">
@@ -268,7 +269,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                 </div>
                             </div>
                             <div class="summary_user">
-                                <h2 id="nombreCabeza"><?php echo($paciente[0]);?> <?php echo($paciente[1]);?></h2>
+                                <h2 id="nombreCabeza"><?php echo($paciente[0]);?> <?php echo($paciente[1]);?><button type="button" class="icon-file6" onclick="javascript:location.href='descarga?paciente=<?php echo $id_paciente; ?>'"></button></h2>
                                 <p id="mailCabeza" class="email_sumary"><?php echo($paciente[7]);?></p>
                                 <div id="guardado">Actualizado: <?php echo $paciente[9]; ?></div>
                                 <div id="guardado">Por confidencialidad con tu paciente evita registrar información sensible donde se identifiquen personas o hechos.</div>
@@ -318,9 +319,6 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                         <label>Correo electronico</label>
                                         <input type="text" id="mail"value= "<?php echo($paciente[7]);?>"/>
                                     </p>
-                                    <p>
-                                        <a href="descarga?paciente=<?php echo $id_paciente; ?>" class="button" target="_blank">Descarga historia clínica</a> 
-                                    </p>
                                 </div>    
                                 <div id="tabs-2">
                                      <textarea id="motivo" placeholder="Escribe el motivo de consulta del paciente. Recuerda describir fielmente las razones por las cuales el paciente consulta, evita realizar interpretaciones o análisis en está sección, si quieres comentar algo utiliza la sección de anotaciones."><?php echo $historia->{"motivo"};?></textarea>                                     
@@ -360,7 +358,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                                     ?>
                                                     <tr>
                                                         <td class="lblAnotacion" style="width: 50%">
-                                                            <label class="lbledita"><?php echo $anotacion->{"anotacion"}; ?></label>
+                                                            <label class="lbledita"><?php echo $anotacion->{"anotacion"}; ?><button type="button" class="icon-pencil5"></button></label>
                                                             <textarea class="editanotacion" style="display: none; width: 95%;"><?php echo $anotacion->{"anotacion"}; ?></textarea>
                                                             <input type="hidden" value="<?php echo $anotacion->{"_id"}->{"\$oid"}; ?>"/>
                                                             <div class="SavingIcon" style="display: none">Guardando...</div>

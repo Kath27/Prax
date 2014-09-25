@@ -5,8 +5,8 @@
         </div>
     </div>
     <div class="cont_welcom">
-        <h3><?php echo $_SESSION["nombre"]." ".$_SESSION["apellido"];?></h3>
-        <p><?php echo $_SESSION["ctagmail_usuario"];?></p>
+        <h3 id="perfilNombre"><?php echo $_SESSION["nombre"]." ".$_SESSION["apellido"];?></h3>
+        <p id="perfilGmail"><?php echo $_SESSION["ctagmail_usuario"];?></p>
     </div> 
 </div>
 <button type="button" id="logut" onclick="javascript:location.href='logOut'">Salir de la Plataforma</button>
