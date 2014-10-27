@@ -12,6 +12,7 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/font.css">
         <link href="css/jquery_notification.css" type="text/css" rel="stylesheet"/>
         <script type="text/javascript">
             function registroAdmin(){
@@ -34,17 +35,24 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
                                 type: "success"
                         });
                         limpiarform();
+                        setTimeout(function(){
+                            location.href="historiaClinica?paciente="+doc; 
+                        },1000);
+                        setTimeout(closeNotification, 3000);
+                        
                     }else{
                             showNotification({
                                 message: respuesta.message,
                                     type: "error"
                             });
+                            setTimeout(closeNotification, 3000);
                     }
                 }else if (http.readyState == 4){
                     showNotification({
                         message: "Ocurrio un error",
                                 type: "error"
                     });
+                    setTimeout(closeNotification, 3000);
                 }
             };
             }
@@ -73,7 +81,7 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
             <div id="profile_welcom_header">
                 <div class="cont_avatar">
                     <div class="avatar">
-                        <img src="img/avatar-def.jpg">
+                        <img src="<?php echo $_SESSION["img"];?>"/>
                     </div>
                 </div>
             </div>
@@ -83,14 +91,6 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
         </header>
         <section>
             <aside>
-                <div id="profile_welcom">
-                    <div class="cont_avatar">
-                        <div class="avatar">
-                            <img src="img/avatar-def.jpg">
-                        </div>
-                    </div>
-                    <?php include('perfilAside.php');?>
-                </div>
                 <nav>
                     <?php include("menu.php"); ?>
                 </nav>
@@ -100,7 +100,7 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
                     <div class="panel">
                         <div class="header_user">
                             <div class="summary_user">
-                                <h2>Agregar Paciente</h2>                                
+                                <h2>Crear Paciente</h2>                                
                             </div>
                         </div>
                         <div id="tabs">                            
@@ -131,7 +131,7 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
                 </div>            
             </article>
         </section>
-        <footer>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
+        <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
         <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>

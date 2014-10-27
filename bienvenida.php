@@ -24,7 +24,7 @@ session_start();
             <div id="profile_welcom_header">
                 <div class="cont_avatar">
                     <div class="avatar">
-                        <img src="img/avatar-def.jpg">
+                        <img src="<?php echo $_SESSION["img"];?>"/>
                     </div>
                 </div>
             </div>

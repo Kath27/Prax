@@ -15,7 +15,7 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
         $fechnac = htmlentities($_POST['fechnac']);
         $targProfe = htmlentities($_POST['targProfe']);
         $ubicacion = htmlentities($_POST['ubicacion']);
-        $ctagmail_usuario = htmlentities($_POST['ctagmail_usuario']);
+        $ctagmail_usuario = trim(htmlentities($_POST['ctagmail_usuario']));
         $isActive=$_POST["isActive"];
         $idPsico = $_POST['idPsico'];
         
@@ -23,6 +23,23 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
         if (!filter_var($ctagmail_usuario, FILTER_VALIDATE_EMAIL)) {
             imprimir_respuesta(false,"Esta dirección de correo ($ctagmail_usuario) no es válida.","ErrorCorreo");
         }
+        if($ctagmail_usuario!=$_SESSION["ctagmail_usuario"] && !stristr($ctagmail_usuario, "gmail.com")){
+            imprimir_respuesta(false,"Esta dirección de correo ".$ctagmail_usuario . " debe ser Gmail","ErrorCorreo");
+        }        
+        $sql="SELECT ctagmail_usuario FROM prax.admin_psico WHERE ctagmail_usuario='".$ctagmail_usuario."' AND id_adminpsic != " .$idPsico; 
+        $result=mysql_query($sql, $link)or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
+        
+        if(mysql_num_rows($result)>0){
+            imprimir_respuesta(false,"El correo insertado se encuentra asociado a otra cuenta","ErrorCorreo");
+        }
+        
+        $sql="SELECT ctagmail_usuario FROM prax.admin_admin WHERE ctagmail_usuario='".$ctagmail_usuario."'"; 
+        $result=mysql_query($sql, $link)or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
+        
+        if(mysql_num_rows($result)>0){
+            imprimir_respuesta(false,"El correo insertado se encuentra asociado a otra cuenta","ErrorCorreo");
+        }
+        
         /*$dominio=substr($ctagmail_usuario,strpos($ctagmail_usuario,"@")+1);
         if(!dominioEsGmail($dominio)){
             imprimir_respuesta(false,"Esta direccion de correo ".$ctagmail_usuario."no es una cuenta de google","ErrorCorreo");

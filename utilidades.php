@@ -16,17 +16,6 @@
         return $_POST[$keyCode];
     }
     
-    function getmxrr($hostname, &$mxhosts){
-        $mxhosts = array();
-        exec('%SYSTEMDIRECTORY%\\nslookup.exe -q=mx '.escapeshellarg($hostname), $result_arr);
-        foreach($result_arr as $line)
-        {
-          if (preg_match("/.*mail exchanger = (.*)/", $line, $matches))
-              $mxhosts[] = $matches[1];
-        }
-        return( count($mxhosts) > 0 );
-    }
-    
     function dominioEsGmail($dominio){
         $mxr = array();
         getmxrr($dominio, $mxr);

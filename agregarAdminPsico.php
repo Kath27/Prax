@@ -15,7 +15,7 @@ session_start();
         $fechnac = htmlentities($_POST['fechnac']);
         $targProfe = htmlentities($_POST['targProfe']);
         $ubicacion = htmlentities($_POST['ubicacion']);
-        $ctagmail_usuario = htmlentities($_POST['ctagmail_usuario']);
+        $ctagmail_usuario = trim(htmlentities($_POST['ctagmail_usuario']));
         
 
         if (!filter_var($ctagmail_usuario, FILTER_VALIDATE_EMAIL)) {

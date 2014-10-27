@@ -1,26 +1,19 @@
 <?php
-use google\appengine\api\users\User;
-use google\appengine\api\users\UserService;
-
-$user = UserService::getCurrentUser();
-if ($user) {
-    header('Location: ' . UserService::createLogoutURL($_SERVER['REQUEST_URI']));
-}
-else{
     session_start();
-    $_SESSION["googleUserId"] = "";
-    $_SESSION["nombre"] = "";
-    $_SESSION["apellido"] = "";
-    $_SESSION["documento"] = "";
-    $_SESSION["sexo"] = "";
-    $_SESSION["fechnac"] = "";
-    $_SESSION["targProfe"] = "";
-    $_SESSION["ubicacion"] = "";
-    $_SESSION["ctagmail_usuario"] = "";
-    $_SESSION["userId"] = "";
-    $_SESSION["rol"] = "";    
-    session_destroy();
-    header('Location: /');
-}  
     
+    unset($_SESSION["googleUserId"]);
+    unset($_SESSION["nombre"]);
+    unset($_SESSION["apellido"]);
+    unset($_SESSION["documento"]);
+    unset($_SESSION["sexo"]);
+    unset($_SESSION["fechnac"]);
+    unset($_SESSION["targProfe"]);
+    unset($_SESSION["ubicacion"]);
+    unset($_SESSION["ctagmail_usuario"]);
+    unset($_SESSION["userId"]);
+    unset($_SESSION["rol"]);
+    unset($_SESSION['access_token']);    
+    session_destroy();
+    
+    header('Location: https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://lively-shelter-687.appspot.com');  
 ?>

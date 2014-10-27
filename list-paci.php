@@ -12,7 +12,9 @@ include('config.php');
     else if($_SESSION["rol"]=="admin"){
         $sql.=" WHERE id_admin='".$_SESSION["userId"]."'";
     }
-    $result = mysql_query($sql,$link)or die(exit(mysql_error($link)));       
+    $result = mysql_query($sql,$link)or die(exit(mysql_error($link)));   
+    $id_admin = ($_SESSION["rol"] == "admin")? "a" : "p";
+    $id_admin .= $_SESSION["userId"];       
 ?>
 <!DOCTYPE html>
     <head>
@@ -50,7 +52,7 @@ include('config.php');
             <div id="profile_welcom_header">
                 <div class="cont_avatar">
                     <div class="avatar">
-                        <img src="img/avatar-def.jpg">
+                        <img src="<?php echo $_SESSION["img"];?>"/>
                     </div>
                 </div>
             </div>
@@ -60,14 +62,6 @@ include('config.php');
         </header>
         <section>
             <aside>
-                <div id="profile_welcom">
-                    <div class="cont_avatar">
-                        <div class="avatar">
-                            <img src="img/avatar-def.jpg">
-                        </div>
-                    </div>
-                    <?php include('perfilAside.php');?>
-                </div>
                 <nav>
                     <?php include("menu.php"); ?>
                 </nav>
@@ -75,6 +69,7 @@ include('config.php');
             <article>
                 <div class="row">
                     <div class="panel" id="cosa">
+                        <?php include("utilidades.php"); ?>
                         <h2 class="title_panel">Lista de Pacientes</h2>
                         <div class="cont_search_user">
                             <input class="search" id="search" type="search" placeholder="Escriba un criterio de búsqueda"></input>
@@ -89,7 +84,7 @@ include('config.php');
                             </div>
                         
                             <div class="cont_user_list">
-                                <h2><?php echo "Agregar Nuevo Paciente";?></h2>
+                                <h2><?php echo "Crear Paciente";?></h2>
                             </div>                          
                        </a>                      
                         <?php } ?>
@@ -99,7 +94,7 @@ include('config.php');
                                     <li>
                                         <div class="cont_avatar">
                                             <div class="avatar">
-                                                <img src="img/avatar-def.jpg">
+                                                <img src="<?php echo "/imageProxy?paciente=" . $psico[0] . "&idAdmin=" . $id_admin; ?>">
                                             </div>
                                         </div>
                                         <div class="cont_user_list">
@@ -121,7 +116,7 @@ include('config.php');
                 </div>            
             </article>
         </section>
-        <footer>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
+        <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> S.A.S 2014 - <span class="ano_current"></span>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
         <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>

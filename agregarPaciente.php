@@ -15,9 +15,6 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
         date_default_timezone_set('America/Lima');
         $fecha = date("Y-m-d H:i:s");
 
-        if (!filter_var($ctagmail, FILTER_VALIDATE_EMAIL)) {
-            imprimir_respuesta(false,"Esta dirección de correo ($ctagmail_usuario) no es válida.","ErrorCorreo");
-        }
         if($_SESSION["rol"]=="admin"){
            $columnaAdmin =  "id_admin";
         }
@@ -25,15 +22,26 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
             $columnaAdmin = "id_adminpsic";
         }
         
+        $sql="SELECT documento FROM prax.paciente WHERE documento ='".$documento."' AND ".$columnaAdmin."=".$user;
+        $result2=mysql_query($sql,$link)or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
+        
+        if(mysql_num_rows($result2)>0){
+            imprimir_respuesta(false,"Ya existe un paciente con ese número de identificación: " . $documento,"ErrorMysql");
+        }
+                
                 // Insertamos los datos en la base de datos, si da algun error lo muestra. 
-        $sql = "INSERT INTO paciente (documento, nombre, apellido, fecha_crea, " . $columnaAdmin . ") VALUES ('".$documento."','".$nombre."','".$fecha."','".$user."')";
+        $sql = "INSERT INTO paciente (documento, nombre, apellido, fecha_crea, fecha_mod," . $columnaAdmin . ") VALUES ('".$documento."','".$nombre."','".$apellido."','".$fecha."','".$fecha."','".$user."')";
        
         mysql_query($sql,$link) or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
-
         mysql_close($link);
-        crearHistoria($documento);
-        // Mostramos un mensaje diciendo que todo salio como lo esperado
+        
+        $idAdmin = ($_SESSION["rol"] == "admin")? "a" : "p";
+        $idAdmin .= $_SESSION["userId"];
+        
+        crearHistoria($documento, $idAdmin);
+        
         imprimir_respuesta(true,"Paciente agregaro correctamente");
+
     }
     else{
         imprimir_respuesta(false,"Falta llenar algun dato","FormularioVacio");

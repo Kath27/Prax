@@ -12,6 +12,7 @@ if (!isset($_SESSION["userId"]) || $_SESSION["rol"] != "admin"){ header('Locatio
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/font.css">
         <link href="css/jquery_notification.css" type="text/css" rel="stylesheet"/>
         <script type="text/javascript">
             function registroAdmin(){
@@ -35,6 +36,7 @@ if (!isset($_SESSION["userId"]) || $_SESSION["rol"] != "admin"){ header('Locatio
                             message: respuesta.message,
                                 type: "success"
                         });
+                        setTimeout(closeNotification, 3000);
                         limpiarform();
                     }else{
                         if(respuesta.codigoerror=="ErrorCorreo")
@@ -43,12 +45,16 @@ if (!isset($_SESSION["userId"]) || $_SESSION["rol"] != "admin"){ header('Locatio
                                 message: respuesta.message,
                                     type: "error"
                             });
+                            setTimeout(closeNotification, 3000);
+                        
+                            
                     }
                 }else if (http.readyState == 4){
                     showNotification({
                         message: "Ocurrio un error",
                                 type: "error"
                     });
+                    setTimeout(closeNotification, 3000);
                 }
             };
             }
@@ -79,7 +85,7 @@ if (!isset($_SESSION["userId"]) || $_SESSION["rol"] != "admin"){ header('Locatio
             <div id="profile_welcom_header">
                 <div class="cont_avatar">
                     <div class="avatar">
-                        <img src="img/avatar-def.jpg">
+                        <img src="<?php echo $_SESSION["img"];?>"/>
                     </div>
                 </div>
             </div>
@@ -89,14 +95,6 @@ if (!isset($_SESSION["userId"]) || $_SESSION["rol"] != "admin"){ header('Locatio
         </header>
         <section>
             <aside>
-                <div id="profile_welcom">
-                    <div class="cont_avatar">
-                        <div class="avatar">
-                            <img src="img/avatar-def.jpg">
-                        </div>
-                    </div>
-                    <?php include('perfilAside.php');?>
-                </div>
                 <nav>
                     <?php include("menu.php"); ?>
                 </nav>
@@ -141,7 +139,7 @@ if (!isset($_SESSION["userId"]) || $_SESSION["rol"] != "admin"){ header('Locatio
                 </div>            
             </article>
         </section>
-        <footer>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
+        <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> S.A.S 2014 - <span class="ano_current"></span>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
         <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>

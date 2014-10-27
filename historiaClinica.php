@@ -13,13 +13,23 @@ if(mysql_num_rows($result)==0){
     header('Location: /');
 }
 
-$historia = getHistoriaClinica($id_paciente);
+if($_SESSION["rol"]=="admin"){
+   $columnaAdmin =  "id_admin";
+}
+else{
+    $columnaAdmin = "id_adminpsic";
+}
+
+$id_admin = ($_SESSION["rol"] == "admin")? "a" : "p";
+$id_admin .= $_SESSION["userId"];
+
+$historia = getHistoriaClinica($id_paciente, $id_admin);
 $historia = $historia[0];
 
-$anotaciones = getAnotaciones($id_paciente);
+$anotaciones = getAnotaciones($id_paciente, $id_admin);
 
 
-$sql = "SELECT nombre, apellido, documento, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, id_paciente, fecha_mod FROM prax.paciente WHERE documento='".$id_paciente."'";
+$sql = "SELECT nombre, apellido, documento, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, id_paciente, fecha_mod FROM prax.paciente WHERE documento='".$id_paciente."' AND " . $columnaAdmin."=".$_SESSION["userId"];
 $result = mysql_query($sql, $link) or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
 $paciente = mysql_fetch_row($result);
 
@@ -103,6 +113,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                             var respuesta = JSON.parse(http.responseText);
                             if (respuesta.estado){
                                 $("#guardado").html("Actualizado: " + respuesta.objResponse.updated);
+                                $("#guardado").css("color","#000");
                                 $("#nombreCabeza").html($("#nombre").val()+" "+$("#apellido").val());
                                 $("#mailCabeza").html($("#mail").val());
                             }else{
@@ -110,12 +121,18 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                     message: respuesta.message,
                                     type: "error"
                                 });
+                                
+                                $("#guardado").html(lastUpdate);
+                                setTimeout(closeNotification, 3000);
                             }
                         }else if (http.readyState == 4){
                             showNotification({
                                 message: "Ocurrio un error",
                                 type: "error"
                             });
+                            
+                            $("#guardado").html(lastUpdate);
+                            setTimeout(closeNotification, 3000);
                         }
                     };        
                 }
@@ -148,12 +165,14 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                     message: respuesta.message,
                                     type: "error"
                                 });
+                                setTimeout(closeNotification, 3000);
                             }
                         }else if (http.readyState == 4){
                             showNotification({
                                 message: "Ocurrio un error",
                                 type: "error"
                             });
+                            setTimeout(closeNotification, 3000);
                         }
                     };        
                 }
@@ -163,13 +182,20 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                     var anot = document.createElement("td"); 
                     var fecCrea = document.createElement("td");
                     var fecMod = document.createElement("td");
+                    var savingIcon = document.createElement("div");
                     
                     var label = document.createElement("label");
                     var textArea = document.createElement("textarea");
                     var hidden = document.createElement("input");
                     
+                    var button = document.createElement("button");
+                    
                     label.innerHTML = anotacion;
                     label.className = "lbledita";
+                    
+                    button.type="button";
+                    button.className = "icon-pencil5";
+                    label.appendChild(button);
                     
                     textArea.value = anotacion;
                     textArea.className = "editanotacion";
@@ -179,9 +205,14 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                     hidden.value = anotId;
                     hidden.type = "hidden";
                     
+                    savingIcon.className = "SavingIcon";
+                    savingIcon.innerHTML = "Guardando...";
+                    savingIcon.style.display = "none";
+                    
                     anot.appendChild(label);
                     anot.appendChild(textArea);
                     anot.appendChild(hidden);
+                    anot.appendChild(savingIcon);
                     
                     fecCrea.innerHTML=fecha;
                     fecMod.innerHTML=fecha;
@@ -195,7 +226,11 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                     document.getElementById("tbl_anotaciones").appendChild(fila);
                     
                     prepararAnotacionesParaEdicion();
-                }                
+                }      
+                function generateBoundary() { 
+                  return "AJAX-----------------------" + (new Date).getTime(); 
+                }
+                
                 function actualizarAnotacion(label, anotacion,id_anotacion){
                     var http = new XMLHttpRequest();
                     http.open("POST", "actualizarAnotacion", true);
@@ -206,7 +241,13 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                         if (http.readyState == 4 && http.status == 200) {
                             var respuesta = JSON.parse(http.responseText);
                             if (respuesta.estado){
+                                var button = document.createElement("button");
+                                button.type="button";
+                                button.className = "icon-pencil5";
+                                
                                 label.html(anotacion.val());
+                                label[0].appendChild(button);
+                                
                                 label.parent().next().next().html(respuesta.objResponse);
                                 label.parent().find(".SavingIcon").css("display","none");
                             }else{
@@ -214,12 +255,14 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                     message: respuesta.message,
                                     type: "error"
                                 });
+                                setTimeout(closeNotification, 3000);
                             }
                         }else if (http.readyState == 4){
                             showNotification({
                                 message: "Ocurrio un error",
                                 type: "error"
                             });
+                            setTimeout(closeNotification, 3000);
                         }
                     }; 
                 }
@@ -235,7 +278,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
             <div id="profile_welcom_header">
                 <div class="cont_avatar">
                     <div class="avatar">
-                        <img src="img/avatar-def.jpg">
+                        <img src="<?php echo $_SESSION["img"];?>"/>
                     </div>
                 </div>
             </div>
@@ -245,14 +288,6 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
         </header>
         <section>
             <aside>
-                <div id="profile_welcom">
-                    <div class="cont_avatar">
-                        <div class="avatar">
-                            <img src="img/avatar-def.jpg">
-                        </div>
-                    </div>
-                    <?php include('perfilAside.php');?>
-                </div>
                 <nav>
                     <?php include("menu.php"); ?>
                 </nav>
@@ -263,13 +298,24 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                         <div class="header_user">
                             <div class="cont_avatar">
                                 <div class="avatar">
-                                    <div class="icon_upload"></div>
-                                    <img id="open_upload_avatar" src="img/avatar-def.jpg">
-                                    <input type="file" id="upload_avatar" />
+                                    <div class="icon_upload icon-upload4"></div>
+                                    <img id="open_upload_avatar" src="<?php echo "/imageProxy?paciente=" . $paciente[2] . "&idAdmin=" . $id_admin; ?>">
+                                    <iframe name="iframeAvatar" id="iframeAvatar" style="display: none;"></iframe>
+                                    <?php
+                                        require_once 'google/appengine/api/cloud_storage/CloudStorageTools.php';
+                                        use google\appengine\api\cloud_storage\CloudStorageTools;
+                                        
+                                        $options = array('gs_bucket_name' => 'imagespacientes');
+                                        $upload_url = CloudStorageTools::createUploadUrl('/uploadImage?paciente=' . $paciente[2] . '&idAdmin=' . $id_admin, $options);
+                                    ?>
+                                    <form id="frmAvatar" target="iframeAvatar" action="<?php echo $upload_url; ?>" method="POST" enctype="multipart/form-data">
+                                        <input type="file" id="uploadAvatar" name="uploadAvatar" />
+                                    </form>
+                                    <div id="fileuploader"></div>
                                 </div>
                             </div>
                             <div class="summary_user">
-                                <h2 id="nombreCabeza"><?php echo($paciente[0]);?> <?php echo($paciente[1]);?><button type="button" class="icon-file6" onclick="javascript:location.href='descarga?paciente=<?php echo $id_paciente; ?>'"></button></h2>
+                                <h2 id="nombreCabeza"><?php echo($paciente[0]);?> <?php echo($paciente[1]);?><button type="button" style="display: none" class="icon-file6" onclick="javascript:location.href='descarga?paciente=<?php echo $id_paciente; ?>'"></button></h2>
                                 <p id="mailCabeza" class="email_sumary"><?php echo($paciente[7]);?></p>
                                 <div id="guardado">Actualizado: <?php echo $paciente[9]; ?></div>
                                 <div id="guardado">Por confidencialidad con tu paciente evita registrar información sensible donde se identifiquen personas o hechos.</div>
@@ -345,7 +391,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                 </div>
                                 <div id="tabs-6">
                                     <textarea id="anotaciones"></textarea>
-                                    <p><a class="button" onclick="guardarAnotacion()">Guardar anotación</a> 
+                                    <p><a class="button" style="cursor: pointer" onclick="guardarAnotacion()">Guardar anotación</a> 
                                     <div class="CSSTableGenerator">
                                         <table id="tbl_anotaciones">
                                             <tr>
@@ -426,7 +472,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                 </div>            
             </article>
         </section>
-        <footer>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
+        <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> S.A.S 2014 - <span class="ano_current"></span>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
         <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>
@@ -455,7 +501,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                     if (input) new google.maps.places.Autocomplete(input);
                 },100);
                 $('#documento,#documento_cont,#telFijo,#telMovil,#telFijo_cont,#telMovil_cont').filter_input({regex:'[0-9]'});
-                $('#fechanac,#fechanac_cont').filter_input({regex:'[]'});
+                $('#fechanac,#fechanac_cont').filter_input({regex:'[0-9\-]'});
             });
             
 
@@ -566,8 +612,8 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                     return false;
                 }
                 
-                var temp_guadado;
-                $("textarea,input[type=text]").keydown(function (){
+                var temp_guadado, lastUpdate;
+                function autoSave(){
                     if($(this).hasClass("editanotacion")){
                         return;
                     }
@@ -577,10 +623,56 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                         clearTimeout(temp_guadado);
                         
                     temp_guadado = setTimeout(function(){
-                        registroHistoria();
+                        lastUpdate = $("#guardado").html();
                         $("#guardado").html("Guardando...");
+                        $("#guardado").css("color","#a21218");
+                        setTimeout(function(){
+                            registroHistoria();
+                        }, 2000);
                     }, 3000);
+                }
+                $("textarea,input[type=text]").keydown(autoSave);
+                $("textarea,input[type=text]").change(autoSave);
+                $("#uploadAvatar").change(function(){
+                    var form = $("#frmAvatar")[0]
+                    form.submit();
+                    
+                    $("#open_upload_avatar").attr("src", "img/ajax-loader.gif");
+                    
+                    uploadAvatarCallback();
                 });
+                
+                function uploadAvatarCallback(){
+                    var respuesta = $("#iframeAvatar").contents().find("pre").html();
+                    
+                    if(respuesta && respuesta != ""){
+                        try{
+                            var json = JSON.parse(respuesta);
+                            
+                            if(json.estado){
+                                var d = (new Date()).getTime();
+                                $("#open_upload_avatar").attr("src", "<?php echo "/imageProxy?paciente=" . $paciente[2] . "&idAdmin=" . $id_admin; ?>&time=" + d);
+                            }else{
+                                showNotification({
+                                    message: json.message,
+                                    type: "error"
+                                });
+                                setTimeout(closeNotification, 3000);
+                                $("#open_upload_avatar").attr("src", "<?php echo "/imageProxy?paciente=" . $paciente[2] . "&idAdmin=" . $id_admin; ?>&time=" + d);
+                            }
+                        }catch (e){
+                            showNotification({
+                                message: "Ocurrio un error",
+                                type: "error"
+                            });
+                            setTimeout(closeNotification, 3000);
+                        }
+                        
+                        $("#iframeAvatar").contents().find("body").html("");
+                    }else{
+                        setTimeout(uploadAvatarCallback,500);
+                    }
+                }
                 
                 function prepararAnotacionesParaEdicion(){
                      $(".lblAnotacion").click(function(event){
@@ -601,7 +693,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                             temp_guadado = setTimeout(function(){
                                 saving.css("display","inline-block");
                                 actualizarAnotacion(lbl,txt,hdn);
-                            }, 2000);
+                            }, 3000);
                         });
                         
                         event.stopPropagation();

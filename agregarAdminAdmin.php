@@ -12,7 +12,7 @@ if (!isset($_SESSION["userId"]) || $_SESSION["rol"] != "admin"){ header('Locatio
         $nombre = htmlentities($_POST['nombre']);
         $apellido = htmlentities($_POST['apellido']);
         $documento = htmlentities($_POST['documento']);        
-        $ctagmail_usuario = htmlentities($_POST['ctagmail_usuario']);
+        $ctagmail_usuario = trim(htmlentities($_POST['ctagmail_usuario']));
         /*user=$_SESSION["getUserId"]*/
 
         if (!filter_var($ctagmail_usuario, FILTER_VALIDATE_EMAIL)) {
@@ -20,8 +20,15 @@ if (!isset($_SESSION["userId"]) || $_SESSION["rol"] != "admin"){ header('Locatio
         }
 
         $sql = "SELECT * FROM admin_admin WHERE ctagmail_usuario='" . $ctagmail_usuario . "'";
-        $result = mysql_query($sql, $link);
+        $result = mysql_query($sql, $link)or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
         if ($result && mysql_num_rows($result) > 0){
+            imprimir_respuesta(false,"Esta cuenta gmail ya existe","ErrorCorreo");
+        }
+        
+        $sql="SELECT ctagmail_usuario FROM prax.admin_psico WHERE ctagmail_usuario='".$ctagmail_usuario."'"; 
+        $result=mysql_query($sql, $link)or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
+        
+        if(mysql_num_rows($result)>0){
             imprimir_respuesta(false,"Esta cuenta gmail ya existe","ErrorCorreo");
         }
 

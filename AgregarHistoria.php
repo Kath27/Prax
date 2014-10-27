@@ -1,17 +1,19 @@
 <?php
-    include("config_mongo.php");
-    include("utilidades.php");
+    include_once("config_mongo.php");
+    include_once("utilidades.php");
     include("config.php");
     session_start();
     if (!isset($_SESSION["userId"])){ header('Location: /'); }
      
     $objResponse = ""; 
+    $idAdmin = ($_SESSION["rol"] == "admin")? "a" : "p";
+    $idAdmin .= $_SESSION["userId"];
     if (!empty($_POST['anotaciones'])){
         $documento = htmlentities(getParameter('documento'));    
         $anotaciones = htmlentities(getParameter('anotaciones'));
         date_default_timezone_set('America/Lima');
         $fecha = date("Y-m-d H:i:s");
-        $objResponse = guardarAnotaciones($documento, $anotaciones, $fecha);
+        $objResponse = guardarAnotaciones($documento, $anotaciones, $fecha, $idAdmin);
         $objResponse->{"updated"} = $fecha;
         
         mysql_close($link);
@@ -33,7 +35,7 @@
      $ubicacion = htmlentities(getParameter('ubicacion'));
      $telFijo = htmlentities(getParameter('telFijo'));
      $telMovil = htmlentities(getParameter('telMovil'));
-     $mail = htmlentities(getParameter('mail'));
+     $mail = trim(htmlentities(getParameter('mail')));
      $nombre_cont = htmlentities(getParameter('nombre_cont'));
      $apellido_cont = htmlentities(getParameter('apellido_cont'));
      $documento_cont = htmlentities(getParameter('documento_cont'));
@@ -41,17 +43,38 @@
      $ubicacion_cont = htmlentities(getParameter('ubicacion_cont'));
      $telFijo_cont = htmlentities(getParameter('telFijo_cont'));
      $telMovil_cont = htmlentities(getParameter('telMovil_cont'));
-     $mail_cont = htmlentities(getParameter('mail_cont'));
+     $mail_cont = trim(htmlentities(getParameter('mail_cont')));
      $tipo_relacion = htmlentities(getParameter('tipo_relacion'));
      date_default_timezone_set('America/Lima');
      $fecha = date("Y-m-d H:i:s");
-                
-     $result = guardarHistoria($documento, $motivo, $evaluacionMedico, $evaluacionFami, $evaluacionPsico, $evaluacionNeuro, $diagnostico, $tratamiento);
+     
+     if($_SESSION["rol"]=="admin"){
+       $columnaAdmin =  "id_admin";
+    }
+    else{
+        $columnaAdmin = "id_adminpsic";
+    }
+               
+     $result = guardarHistoria($documento, $motivo, $evaluacionMedico, $evaluacionFami, $evaluacionPsico, $evaluacionNeuro, $diagnostico, $tratamiento, $idAdmin);
      
      if($result->{"error"} != null){
          imprimir_respuesta(false,$result->{"error"}, "ErrorMongo");
      }
      
+     if ($mail != ""){
+         $sql="SELECT ctagmail FROM prax.paciente WHERE ctagmail='".$mail."' AND documento !='".$documento."' AND id_paciente != ".$id_paciente;
+         $result= mysql_query($sql, $link)or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
+         if(mysql_num_rows($result)>0){
+             imprimir_respuesta(false,"Este correo se encuentra registrado por otro paciente","ErrorCorreo");
+         }
+     }
+     
+     $sql="SELECT documento FROM prax.paciente WHERE documento='" . $documento . "' AND ".$columnaAdmin."=".$_SESSION["userId"]." AND id_paciente != ".$id_paciente;
+     $result=mysql_query($sql, $link)or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
+     if(mysql_num_rows($result)>0){
+         imprimir_respuesta(false,"Ya existe un paciente con ese número de identificación");
+     }
+             
      $sql = "UPDATE prax.paciente SET  nombre='".$nombre."', apellido='".$apellido."', documento='".$documento."', fechnac='".$fechanac."', ubicacion='".$ubicacion."', tel_fijo='".$telFijo."',
      tel_movil='".$telMovil."',ctagmail='".$mail."', fecha_mod='".$fecha."' WHERE id_paciente=".$id_paciente;
      $result = mysql_query($sql, $link)or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
@@ -59,6 +82,9 @@
      if ($nombre_cont != "" && $apellido_cont != "" && $documento_cont != "" && $fechanac_cont != "" && $ubicacion_cont != "" && $telFijo_cont != "" && $telMovil_cont != "" && $mail_cont!=""){
          $sql = "SELECT id_paciente FROM prax.paciente_contac where id_paciente =".$id_paciente ;
          $result =mysql_query($sql, $link)or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
+         if (!filter_var($mail_cont, FILTER_VALIDATE_EMAIL)) {
+            imprimir_respuesta(false,"Esta dirección de correo ($mail_cont) no es válida.","ErrorCorreo");
+        }
      
          if(mysql_num_rows($result) > 0){
              $sql = "UPDATE prax.paciente_contac SET documento='".$documento_cont."',nombre='".$nombre_cont."',apellido='".$apellido_cont."',fechnac='".$fechanac_cont."', " .

@@ -15,6 +15,18 @@ handlers:
 - url: /index
   script: index.php
   
+- url: /imageProxy
+  script: imageProxy.php
+  
+- url: /pruebaMail
+  script: pruebaMail.php
+
+- url: /uploadImage
+  script: uploadImage.php
+  
+- url: /pruebaCifrado
+  script: pruebaCifrado.php  
+  
 - url: /bienvenida
   script: bienvenida.php
   
@@ -92,7 +104,7 @@ handlers:
   
 - url: /list-user
   script: list-user.php
-
+  
 - url: /css
   static_dir: css
 
@@ -111,4 +123,3 @@ handlers:
 - url: /fonts
   static_dir: fonts
   
-
