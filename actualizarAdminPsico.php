@@ -16,6 +16,8 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
         $targProfe = htmlentities($_POST['targProfe']);
         $ubicacion = htmlentities($_POST['ubicacion']);
         $ctagmail_usuario = trim(htmlentities($_POST['ctagmail_usuario']));
+		$city = $_POST["city"];
+		$cityChanged = ($_POST["cityChanged"] == "T");
         $isActive=$_POST["isActive"];
         $idPsico = $_POST['idPsico'];
         
@@ -46,7 +48,12 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
         }*/
          // Insertamos los datos en la base de datos, si da algun error lo muestra. 
         $sql = "UPDATE prax.admin_psico SET nombre='".$nombre."',apellido='".$apellido."',documento='".$documento."',sexo='".$sexo."',fechnac='".$fechnac.
-        "',targProfe='".$targProfe."',ubicacion='".$ubicacion."',ctagmail_usuario='".$ctagmail_usuario."', isActive='".$isActive."' WHERE id_adminpsic=".$idPsico;
+        "',targProfe='".$targProfe."',ubicacion='".$ubicacion."',ctagmail_usuario='".$ctagmail_usuario."', isActive='".$isActive."'";
+        
+        if ($cityChanged)
+        	$sql .= ", ciudad='" . $city . "'";
+        
+        $sql .= " WHERE id_adminpsic=".$idPsico;
        
         mysql_query($sql,$link) or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
 

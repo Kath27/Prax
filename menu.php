@@ -54,6 +54,12 @@
     <?php if ($rol == "admin"){ 
         $class=(stristr($url, "reportes"))?'class="active"':"";
         ?>
-    <a href="#"><li>Reportes </li <?php echo $class;?>></a>
+    <a href="reportesUsuarios"><li>Reportes usuarios </li <?php echo $class;?>></a>
+    <?php } ?>
+    
+    <?php if ($rol == "admin" || $rol == "psico"){ 
+        $class=(stristr($url, "reportes"))?'class="active"':"";
+        ?>
+    <a href="reportesPacientes"><li>Reportes pacientes </li <?php echo $class;?>></a>
     <?php } ?>
 </ul>

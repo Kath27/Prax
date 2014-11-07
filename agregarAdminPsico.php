@@ -15,6 +15,7 @@ session_start();
         $fechnac = htmlentities($_POST['fechnac']);
         $targProfe = htmlentities($_POST['targProfe']);
         $ubicacion = htmlentities($_POST['ubicacion']);
+		$city = $_POST['city'];
         $ctagmail_usuario = trim(htmlentities($_POST['ctagmail_usuario']));
         
 
@@ -28,8 +29,10 @@ session_start();
             imprimir_respuesta(false,"Esta cuenta gmail ya existe","ErrorCorreo");
         }
 
-        // Insertamos los datos en la base de datos, si da algun error lo muestra. 
-        $sql = "INSERT INTO admin_psico (nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario) VALUES ('".$nombre."','".$apellido."','".$documento."','".$sexo."','".$fechnac."','".$targProfe."','".$ubicacion."','".$ctagmail_usuario."')";
+        // Insertamos los datos en la base de datos, si da algun error lo muestra.
+        date_default_timezone_set('America/Lima');
+        $fecha = date("Y-m-d H:i:s"); 
+        $sql = "INSERT INTO admin_psico (nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario, fechregistro, ciudad) VALUES ('".$nombre."','".$apellido."','".$documento."','".$sexo."','".$fechnac."','".$targProfe."','".$ubicacion."','".$ctagmail_usuario."', '" . $fecha . "', '" . $city . "')";
        
         mysql_query($sql,$link) or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
 

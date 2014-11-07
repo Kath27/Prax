@@ -15,5 +15,5 @@
     unset($_SESSION['access_token']);    
     session_destroy();
     
-    header('Location: https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://lively-shelter-687.appspot.com');  
+    header('Location: https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://lively-shelter-687.appspot.com');  
 ?>

@@ -8,118 +8,169 @@ handlers:
 - url: /favicon\.ico
   static_files: favicon.ico
   upload: favicon\.ico
+  secure: always
 
 - url: /
   script: login.php
+  secure: always
 
 - url: /index
   script: index.php
+  secure: always
+  
+- url: /reportesUsuarios
+  script: reportesUsuarios.php
+  secure: always
+  
+- url: /reportesPacientes
+  script: reportesPacientes.php
+  secure: always
+  
+- url: /getUsersByYear
+  script: getUsersByYear.php
+  secure: always
   
 - url: /imageProxy
   script: imageProxy.php
+  secure: always
   
 - url: /pruebaMail
   script: pruebaMail.php
+  secure: always
 
 - url: /uploadImage
   script: uploadImage.php
+  secure: always
   
 - url: /pruebaCifrado
   script: pruebaCifrado.php  
+  secure: always
   
 - url: /bienvenida
   script: bienvenida.php
+  secure: always
   
 - url: /userInactivo
   script: userInactivo.php  
+  secure: always
 
 - url: /agregarAdminAdmin
   script: agregarAdminAdmin.php
+  secure: always
   
 - url: /agregarAdminPsico
   script: agregarAdminPsico.php
+  secure: always
   
 - url: /actualizarAnotacion
   script: actualizarAnotacion.php
+  secure: always
 
 - url: /agregarPaciente
   script: agregarPaciente.php
+  secure: always
   
 - url: /activarPsicologo
   script: activarPsicologo.php 
+  secure: always
 
 - url: /activarAdmin
-  script: activarAdmin.php   
+  script: activarAdmin.php  
+  secure: always 
 
 - url: /config
   script: config.php
+  secure: always
 
 - url: /logOut
   script: logOut.php   
+  secure: always
   
 - url: /config_mongo
   script: config_mongo.php
+  secure: always
   
 - url: /contarregistros
   script: contarregistros.php
+  secure: always
 
 - url: /actualizarAdminPsico
   script: actualizarAdminPsico.php
+  secure: always
   
 - url: /examplecharts
   script: examplecharts.php
+  secure: always
 
 - url: /helloworld
   script: helloworld.php
+  secure: always
   
 - url: /AdminAdmin
   script: indexAdminAdmin.php
+  secure: always
   
 - url: /AdminPsico
   script: indexAdminPsico.php
+  secure: always
   
 - url: /edicionPsico
   script: edicionPsico.php
+  secure: always
   
 - url: /indexPaciente
   script: indexPaciente.php
+  secure: always
 
 - url: /list-paci
   script: list-paci.php
+  secure: always
   
 - url: /list-admin
   script: list-admin.php
+  secure: always
 
 - url: /historiaClinica
   script: historiaClinica.php
+  secure: always
   
 - url: /AgregarHistoria
   script: AgregarHistoria.php
+  secure: always
 
 - url: /descarga
-  script: /tcpdf/examples/example_002.php
+  script: /tcpdf/examples/historiaClinica.php
+  secure: always
 
 - url: /utilidades
   script: utilidades.php
+  secure: always
   
 - url: /list-user
   script: list-user.php
+  secure: always
   
 - url: /css
   static_dir: css
+  secure: always
 
 - url: /img
   static_dir: img
+  secure: always
 
 - url: /js
   static_dir: js
+  secure: always
 
 - url: /images
   static_dir: images
+  secure: always
 
 - url: /jquery
   static_dir: jquery
+  secure: always
   
 - url: /fonts
   static_dir: fonts
+  secure: always
   

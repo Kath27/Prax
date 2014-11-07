@@ -6,7 +6,7 @@
     
     $client_id = '137217388434-ebvon1u2v110tm8vg0m9rce45ugq1ph6.apps.googleusercontent.com';
     $client_secret = 'Ul76ZPiOzkf5aBJKCVMBzV0V';
-    $redirect_uri = 'http://lively-shelter-687.appspot.com/';
+    $redirect_uri = 'https://lively-shelter-687.appspot.com/';
     
     $client = new Google_Client();
     $client->setClientId($client_id);

@@ -46,6 +46,19 @@
         <link rel="stylesheet" href="css/font.css">
         <link href="css/jquery_notification.css" type="text/css" rel="stylesheet"/>
         <script type="text/javascript">
+        	function getPlaceCity(){
+        		var city = "Indefinido";
+        		if ($("#searchTextField").val() != "" && googleAddressAutocomplete.getPlace()){
+        			var components = googleAddressAutocomplete.getPlace().address_components;
+        			for (var i=0;i<components.length;i++){
+        				if (components[i].types[0] == "locality")
+        					city = components[i].long_name;
+        			}
+        		}
+        		
+        		return city;
+        	}
+        	
             function registroAdmin(){
                 var nombre = encodeURI(document.getElementById("nombre").value);
                 var apellido = encodeURI(document.getElementById("apellido").value);
@@ -57,6 +70,7 @@
                 var ctagmail_usuario = encodeURI(document.getElementById("ctagmail_usuario").value);
                 var idPsico = encodeURI(document.getElementById("idPsico").value);
                 var isActive = "T";
+                var city = encodeURI(getPlaceCity());
                 if($("#estado") && $("#estado").val() == "F") isActive = "F";
                 var http = new XMLHttpRequest();
                     http.open("POST", "actualizarAdminPsico", true);
@@ -70,6 +84,8 @@
                                 "&ubicacion=" + ubicac + 
                                 "&idPsico=" + idPsico +
                                 "&isActive=" + isActive +
+                                "&cityChanged=" + ((cityChanged)? 'T' : 'F') +
+                                "&city=" + city + 
                                 "&ctagmail_usuario=" + ctagmail_usuario
                                 );               
                 http.onreadystatechange = function(){
@@ -231,8 +247,8 @@
             </article>
         </section>
         <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> S.A.S 2014 - <span class="ano_current"></span>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
         <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>
         <script src="js/jquery-ui.js"></script>
         <script src="js/plugins.js"></script>
@@ -252,6 +268,11 @@
 
         $(document).on('ready',function(){ 
             $('#validate_form').on('click',validateForm);
+        });
+        
+        var cityChanged = false;
+        $("#searchTextField").change(function(){
+        	cityChanged = true;
         });
 
 

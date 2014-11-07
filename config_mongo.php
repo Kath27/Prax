@@ -38,9 +38,40 @@
 
 		return $contenido;
 	}
+	
+	function getHistoriasTotales($idAdmin){
+	    $query = urlencode('{"id_admin":"'.$idAdmin.'"}');
+		$url = "https://api.mongolab.com/api/1/databases/prax/collections/historia_clinica?apiKey=" . getMongoApiKey() . "&q=" . $query;
+        $result = file_get_contents($url);
+		$contenido = json_decode($result);
+        
+        foreach ($contenido as $historia){
+            if (trim($historia->{"motivo"}) != "") $historia->{"motivo"}=decrypt(urldecode($historia->{"motivo"}), ENCRYPTION_KEY);
+            if (trim($historia->{"evaluacionMedico"}) != "") $historia->{"evaluacionMedico"}=decrypt(urldecode($historia->{"evaluacionMedico"}), ENCRYPTION_KEY);
+            if (trim($historia->{"evaluacionFami"}) != "") $historia->{"evaluacionFami"}=decrypt(urldecode($historia->{"evaluacionFami"}), ENCRYPTION_KEY);
+            if (trim($historia->{"evaluacionPsico"}) != "") $historia->{"evaluacionPsico"}=decrypt(urldecode($historia->{"evaluacionPsico"}), ENCRYPTION_KEY);
+            if (trim($historia->{"evaluacionNeuro"}) != "") $historia->{"evaluacionNeuro"}=decrypt(urldecode($historia->{"evaluacionNeuro"}), ENCRYPTION_KEY);
+            if (trim($historia->{"diagnostico"}) != "") $historia->{"diagnostico"}=decrypt(urldecode($historia->{"diagnostico"}), ENCRYPTION_KEY);
+            if (trim($historia->{"tratamiento"}) != "") $historia->{"tratamiento"}=decrypt(urldecode($historia->{"tratamiento"}), ENCRYPTION_KEY);
+        }
+
+		return $contenido;
+	}
     
     function getAnotaciones($documento_pacie, $idAdmin){
         $query = urlencode('{"documento_pacie":"' . $documento_pacie . '","id_admin":"'.$idAdmin.'"}');
+        $url = "https://api.mongolab.com/api/1/databases/prax/collections/anotaciones?apiKey=" . getMongoApiKey() . "&q=" . $query;
+        $result = file_get_contents($url);
+        $contenido = json_decode($result);
+        foreach ($contenido as $anotacion) {
+            if (trim($anotacion->{"anotacion"}) != "") $anotacion->{"anotacion"}=decrypt(urldecode($anotacion->{"anotacion"}), ENCRYPTION_KEY);
+        }
+        
+        return $contenido;
+    }
+			
+	function getAnotacionesTotales($idAdmin){
+        $query = urlencode('{"id_admin":"'.$idAdmin.'"}');
         $url = "https://api.mongolab.com/api/1/databases/prax/collections/anotaciones?apiKey=" . getMongoApiKey() . "&q=" . $query;
         $result = file_get_contents($url);
         $contenido = json_decode($result);

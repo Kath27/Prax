@@ -47,4 +47,4 @@ var ano = (new Date).getFullYear();
 $(".ano_current").text( ano );
 //API Goolge Maps//
 var input = document.getElementById('searchTextField');
-new google.maps.places.Autocomplete(input);
+var googleAddressAutocomplete = new google.maps.places.Autocomplete(input);

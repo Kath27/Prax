@@ -33,6 +33,9 @@
      $documento = htmlentities(getParameter('documento'));
      $fechanac = htmlentities(getParameter('fechanac'));
      $ubicacion = htmlentities(getParameter('ubicacion'));
+     $sexo = htmlentities(getParameter('sexo'));
+     $city = getParameter('city');
+     $cityChanged = ($_POST['cityChanged'] == "T");
      $telFijo = htmlentities(getParameter('telFijo'));
      $telMovil = htmlentities(getParameter('telMovil'));
      $mail = trim(htmlentities(getParameter('mail')));
@@ -76,7 +79,11 @@
      }
              
      $sql = "UPDATE prax.paciente SET  nombre='".$nombre."', apellido='".$apellido."', documento='".$documento."', fechnac='".$fechanac."', ubicacion='".$ubicacion."', tel_fijo='".$telFijo."',
-     tel_movil='".$telMovil."',ctagmail='".$mail."', fecha_mod='".$fecha."' WHERE id_paciente=".$id_paciente;
+     tel_movil='".$telMovil."',ctagmail='".$mail."', fecha_mod='".$fecha."', sexo='" . $sexo . "'";
+	 
+	 if ($cityChanged) $sql .= ", ciudad='" . $city . "'";
+	 
+	 $sql .= "WHERE id_paciente=".$id_paciente;
      $result = mysql_query($sql, $link)or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
      
      if ($nombre_cont != "" && $apellido_cont != "" && $documento_cont != "" && $fechanac_cont != "" && $ubicacion_cont != "" && $telFijo_cont != "" && $telMovil_cont != "" && $mail_cont!=""){

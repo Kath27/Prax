@@ -29,7 +29,7 @@ $historia = $historia[0];
 $anotaciones = getAnotaciones($id_paciente, $id_admin);
 
 
-$sql = "SELECT nombre, apellido, documento, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, id_paciente, fecha_mod FROM prax.paciente WHERE documento='".$id_paciente."' AND " . $columnaAdmin."=".$_SESSION["userId"];
+$sql = "SELECT nombre, apellido, documento, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, id_paciente, fecha_mod, sexo FROM prax.paciente WHERE documento='".$id_paciente."' AND " . $columnaAdmin."=".$_SESSION["userId"];
 $result = mysql_query($sql, $link) or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
 $paciente = mysql_fetch_row($result);
 
@@ -54,6 +54,19 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
         <link href="css/jquery_notification.css" type="text/css" rel="stylesheet"/>
         <link href="css/CSSTableGenerator.css" type="text/css" rel="stylesheet"/>
         <script type="text/javascript" charset="utf-8">
+        	function getPlaceCity(){
+        		var city = "Indefinido";
+        		if ($("#searchTextField").val() != "" && googleAddressAutocomplete.getPlace()){
+        			var components = googleAddressAutocomplete.getPlace().address_components;
+        			for (var i=0;i<components.length;i++){
+        				if (components[i].types[0] == "locality")
+        					city = components[i].long_name;
+        			}
+        		}
+        		
+        		return city;
+        	}
+        	
             function registroHistoria(){
                 var motivo = encodeURI(document.getElementById("motivo").value);
                 var evaluacionMedico = encodeURI(document.getElementById("evaluacionMedico").value);
@@ -67,6 +80,8 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                 var documento = encodeURI(document.getElementById("documento").value);
                 var fechanac = encodeURI(document.getElementById("fechanac").value);
                 var ubicacion = encodeURI(document.getElementById("searchTextField").value);
+                var sexo = encodeURI(document.getElementById("sexo").value);
+                var city = encodeURI(getPlaceCity());
                 var telFijo = encodeURI(document.getElementById("telFijo").value);
                 var telMovil = encodeURI(document.getElementById("telMovil").value);
                 var mail = encodeURI(document.getElementById("mail").value);
@@ -95,6 +110,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                 "&documento=" + documento +
                                 "&fechanac=" +  fechanac +
                                 "&ubicacion=" + ubicacion +
+                                "&sexo=" + sexo +
                                 "&telFijo=" +  telFijo +
                                 "&telMovil=" + telMovil+
                                 "&mail=" + mail+
@@ -106,7 +122,9 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                 "&telFijo_cont=" + telFijo_cont+
                                 "&telMovil_cont=" + telMovil_cont+
                                 "&mail_cont=" +mail_cont +
-                                "&tipo_relacion=" + tipo_relacion
+                                "&tipo_relacion=" + tipo_relacion +
+                                "&cityChanged=" + ((cityChanged)? 'T' : 'F') +
+                                "&city=" + city
                                 ); 
                     http.onreadystatechange = function(){
                         if (http.readyState == 4 && http.status == 200) {
@@ -266,6 +284,11 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                         }
                     }; 
                 }
+                
+                function OpenInNewTab(url) {
+				  var win = window.open(url, '_blank');
+				  win.focus();
+				}
         </script>
     </head>
     <body>
@@ -315,7 +338,8 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                 </div>
                             </div>
                             <div class="summary_user">
-                                <h2 id="nombreCabeza"><?php echo($paciente[0]);?> <?php echo($paciente[1]);?><button type="button" style="display: none" class="icon-file6" onclick="javascript:location.href='descarga?paciente=<?php echo $id_paciente; ?>'"></button></h2>
+                                <h2 id="nombreCabeza" style="display: inline-block;"><?php echo($paciente[0]);?> <?php echo($paciente[1]);?></h2>
+                                <h2 style="display: inline-block;"><button type="button" class="icon-file6" onclick="javascript:OpenInNewTab('descarga?paciente=<?php echo $id_paciente; ?>')"></button></h2>
                                 <p id="mailCabeza" class="email_sumary"><?php echo($paciente[7]);?></p>
                                 <div id="guardado">Actualizado: <?php echo $paciente[9]; ?></div>
                                 <div id="guardado">Por confidencialidad con tu paciente evita registrar información sensible donde se identifiquen personas o hechos.</div>
@@ -364,6 +388,16 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                     <p>
                                         <label>Correo electronico</label>
                                         <input type="text" id="mail"value= "<?php echo($paciente[7]);?>"/>
+                                    </p>
+                                    <p>
+                                    	<?php $sexM = ($paciente[10] == "M")? 'selected="selected"' : ""; ?>
+                                    	<?php $sexF = ($paciente[10] == "F")? 'selected="selected"' : ""; ?>
+                                        <label>Sexo</label>
+                                        <select id="sexo">
+                                            <option>Seleccione su sexo</option>
+                                            <option <?php echo $sexM; ?> value='M'>Hombre</option>
+                                            <option <?php echo $sexF; ?> value='F'>Mujer</option>
+                                        </select>
                                     </p>
                                 </div>    
                                 <div id="tabs-2">
@@ -474,7 +508,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
         </section>
         <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> S.A.S 2014 - <span class="ano_current"></span>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
         <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>
         <script src="js/jquery-ui.js"></script>
         <script src="js/plugins.js"></script>
@@ -631,8 +665,8 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                         }, 2000);
                     }, 3000);
                 }
-                $("textarea,input[type=text]").keydown(autoSave);
-                $("textarea,input[type=text]").change(autoSave);
+                $("textarea,input[type=text],#sexo").keydown(autoSave);
+                $("textarea,input[type=text],#sexo").change(autoSave);
                 $("#uploadAvatar").change(function(){
                     var form = $("#frmAvatar")[0]
                     form.submit();
@@ -705,6 +739,11 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                     $(".editanotacion").each(function(){ $(this).hide(); $(this).off("keydown"); });
                     $(".lbledita").each(function(){ $(this).show(); });
                 });
+                
+                var cityChanged = false;
+		        $("#searchTextField").change(function(){
+		        	cityChanged = true;
+		        });
         </script>
 
         <?php mysql_close($link); ?>

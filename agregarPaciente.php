@@ -40,7 +40,7 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
         
         crearHistoria($documento, $idAdmin);
         
-        imprimir_respuesta(true,"Paciente agregaro correctamente");
+        imprimir_respuesta(true,"Paciente agregado correctamente");
 
     }
     else{

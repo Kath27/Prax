@@ -14,6 +14,19 @@ session_start();
         <link rel="stylesheet" href="css/font.css">
         <link href="css/jquery_notification.css" type="text/css" rel="stylesheet"/>
         <script type="text/javascript">
+        	function getPlaceCity(){
+        		var city = "Indefinido";
+        		if ($("#searchTextField").val() != ""){
+        			var components = googleAddressAutocomplete.getPlace().address_components;
+        			for (var i=0;i<components.length;i++){
+        				if (components[i].types[0] == "locality")
+        					city = components[i].long_name;
+        			}
+        		}
+        		
+        		return city;
+        	}
+        	
             function registroAdmin(){
                 var nombre = encodeURI(document.getElementById("nombre").value);
                 var apellido = encodeURI(document.getElementById("apellido").value);
@@ -23,6 +36,7 @@ session_start();
                 var tarjeProf = encodeURI(document.getElementById("targProfe").value);
                 var ubicac = encodeURI(document.getElementById("searchTextField").value);
                 var ctagmail_usuario = encodeURI(document.getElementById("ctagmail_usuario").value);
+                var city = encodeURI(getPlaceCity());
                 var http = new XMLHttpRequest();
                     http.open("POST", "agregarAdminPsico", true);
                     http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
@@ -33,7 +47,8 @@ session_start();
                                 "&fechnac=" + fechanac + 
                                 "&targProfe=" + tarjeProf + 
                                 "&ubicacion=" + ubicac + 
-                                "&ctagmail_usuario=" + ctagmail_usuario
+                                "&ctagmail_usuario=" + ctagmail_usuario + 
+                                "&city=" + city
                                 );               
                 http.onreadystatechange = function(){
                 if (http.readyState == 4 && http.status == 200) {
@@ -183,8 +198,8 @@ session_start();
             </article>
         </section>
         <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> S.A.S 2014 - <span class="ano_current"></span>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
         <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>
         <script src="js/jquery-ui.js"></script>
         <script src="js/plugins.js"></script>
