@@ -19,9 +19,10 @@ session_start();
         $ctagmail_usuario = trim(htmlentities($_POST['ctagmail_usuario']));
         
 
-        if (!filter_var($ctagmail_usuario, FILTER_VALIDATE_EMAIL)) {
-            imprimir_respuesta(false,"Esta dirección de correo ($ctagmail_usuario) no es válida.","ErrorCorreo");
-        }
+        if (!filter_var($ctagmail_usuario, FILTER_VALIDATE_EMAIL)) { imprimir_respuesta(false,"Esta dirección de correo ($ctagmail_usuario) no es válida.","ErrorCorreo"); }
+		if (!isReal($documento)) { imprimir_respuesta(false,"El documento $documento debe ser numérico","ErrorMysql"); }
+		if (!isTextOnly($nombre)) { imprimir_respuesta(false,"El nombre $nombre no debe contener números","ErrorMysql"); }
+		if (!isTextOnly($apellido)) { imprimir_respuesta(false,"El apellido $apellido no debe contener números","ErrorMysql"); }
 
         $sql = "SELECT * FROM admin_psico WHERE ctagmail_usuario='" . $ctagmail_usuario . "'";
         $result = mysql_query($sql, $link);

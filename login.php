@@ -44,7 +44,9 @@
           $sql = "SELECT nombre, apellido, documento, sexo, fechnac, targProfe, ubicacion, ctagmail_usuario, id_adminpsic, isActive FROM prax.admin_psico WHERE ctagmail_usuario='".$email."'";
           $result = mysql_query($sql,$link)or die(exit(mysql_error($link)));
           if(mysql_num_rows($result)==0){
-              $sql="INSERT INTO prax.admin_psico (nombre, apellido,ctagmail_usuario) values ('".$me['name']['givenName']."','".$me['name']['familyName']."','".$email."')";
+          	  date_default_timezone_set('America/Lima');
+        	  $fecha = date("Y-m-d H:i:s"); 
+              $sql="INSERT INTO prax.admin_psico (nombre, apellido,ctagmail_usuario,fechregistro) values ('".$me['name']['givenName']."','".$me['name']['familyName']."','".$email."','" . $fecha ."')";
               $result2 = mysql_query($sql,$link)or die(exit(mysql_error($link)));
               $rol = "psico2";
               if($result2){
@@ -64,6 +66,7 @@
   if($rol=="admin"){
     $admin = mysql_fetch_row($result);  
     if($admin[5]=="F"){
+    	$_SESSION["isActive"] = "F";
         header('Location: '.'/userInactivo');
         exit;
     }
@@ -74,6 +77,7 @@
     $_SESSION["apellido"] = $admin[2];
     $_SESSION["ctagmail_usuario"] = $admin[3];
     $_SESSION["userId"] = $admin[4];
+    $_SESSION["isActive"] = $admin[5];
     $_SESSION["rol"] = "admin";
     $_SESSION["img"]=$me['image']['url'];
     header('Location: '.'/list-user');
@@ -81,6 +85,7 @@
   else if($rol == "psico"){
     $psico = mysql_fetch_row($result);
     if($psico[9]=="F"){
+    	$_SESSION["isActive"] = "F";
         header('Location: '.'/userInactivo');
         exit;
     }
@@ -95,9 +100,10 @@
     $_SESSION["ubicacion"] = $psico[6];
     $_SESSION["ctagmail_usuario"] = $psico[7];
     $_SESSION["userId"] = $psico[8];
+	$_SESSION["isActive"] = $psico[9];
     $_SESSION["img"]=$me['image']['url'];
     $_SESSION["rol"] = "psico";    
-    header('Location: '.'/list-paci');/*list-paci-> este se pone cuando ese listo el software*/
+    header('Location: '.'/list-paci');
   }
 else  if($rol == "psico2"){
     
@@ -111,6 +117,7 @@ else  if($rol == "psico2"){
     $_SESSION["ubicacion"] = "";
     $_SESSION["ctagmail_usuario"] = $email;
     $_SESSION["userId"] = $userId;
+	$_SESSION["isActive"] = "T";
     $_SESSION["img"]=$me['image']['url'];
     $_SESSION["rol"] = "psico";    
     header('Location: '.'/edicionPsico');

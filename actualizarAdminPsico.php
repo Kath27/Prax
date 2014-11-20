@@ -41,6 +41,13 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
         if(mysql_num_rows($result)>0){
             imprimir_respuesta(false,"El correo insertado se encuentra asociado a otra cuenta","ErrorCorreo");
         }
+		
+		$sql="SELECT documento FROM prax.admin_psico WHERE documento='".$documento."' && id_adminpsic != " . $idPsico; 
+        $result=mysql_query($sql, $link)or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
+        
+        if(mysql_num_rows($result)>0){
+            imprimir_respuesta(false,"El documento de identidad se encuentra asociado a otra cuenta","ErrorMysql");
+        }
         
         /*$dominio=substr($ctagmail_usuario,strpos($ctagmail_usuario,"@")+1);
         if(!dominioEsGmail($dominio)){

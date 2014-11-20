@@ -3,6 +3,8 @@ include("../../config.php");
 include("../../config_mongo.php");
 include("../../utilidades.php");
 session_start();
+if (!isset($_SESSION["userId"])) header('Location: /');
+if($_SESSION["isActive"]=="F"){ header('Location: '.'/userInactivo'); exit; }
 
 $id_paciente = $_GET["paciente"];
 $sql = "SELECT nombre, apellido, documento, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, id_paciente FROM prax.paciente WHERE documento='" . $id_paciente . "' ";
@@ -12,7 +14,7 @@ if($_SESSION["rol"]=="psico"){
     $sql.=" AND id_admin='".$_SESSION["userId"]."'";
 }
 $result = mysql_query($sql, $link) or die(imprimir_respuesta(false,mysql_error($link),"ErrorMysql"));
-if (mysql_num_rows($result) == 0) exit("");
+if (mysql_num_rows($result) == 0) header('Location: /');
 $paciente = mysql_fetch_row($result);
 $idP = $paciente[8];
 

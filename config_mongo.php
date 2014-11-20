@@ -82,8 +82,8 @@
         return $contenido;
     }
     
-    function guardarHistoria($docPaciente,$motivo="",$evaluacionMedico="", $evaluacionFami="", $evaluacionPsico="", $evaluacionNeuro="", $diagnostico="", $tratamiento="", $idAdmin){
-        $query = urlencode('{"id_paciente":"' . $docPaciente . '","id_admin":"'.$idAdmin.'"}');
+    function guardarHistoria($oldDoc, $docPaciente, $motivo="",$evaluacionMedico="", $evaluacionFami="", $evaluacionPsico="", $evaluacionNeuro="", $diagnostico="", $tratamiento="", $idAdmin){
+        $query = urlencode('{"id_paciente":"' . $oldDoc . '","id_admin":"'.$idAdmin.'"}');
         $url = "https://api.mongolab.com/api/1/databases/prax/collections/historia_clinica?apiKey=" . getMongoApiKey() . "&q=" . $query;
         
         $update = new stdClass();
@@ -97,6 +97,7 @@
         if (!empty($tratamiento)) $tratamiento = urlencode(encrypt($tratamiento, ENCRYPTION_KEY));
         
         $data = new stdClass();
+		$data->{"id_paciente"}=($docPaciente);
         $data->{"motivo"}=($motivo);
         $data->{"evaluacionMedico"}=($evaluacionMedico);
         $data->{"evaluacionFami"}=($evaluacionFami);
@@ -104,6 +105,30 @@
         $data->{"evaluacionNeuro"}=($evaluacionNeuro);
         $data->{"diagnostico"}=($diagnostico);
         $data->{"tratamiento"}=($tratamiento);
+        
+        $update->{"\$set"}=$data;
+        $options = array(
+            'http' => array(
+                'header'  => "Content-type: application/json\r\n",
+                'method'  => 'PUT',
+                'content' => json_encode($update),
+            ),
+        );
+        
+        $context  = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        
+        return json_decode($result);
+    }
+
+	function cambiarDocumentoAnotaciones($oldDoc, $docPaciente, $idAdmin){
+        $query = urlencode('{"documento_pacie":"' . $oldDoc . '","id_admin":"'.$idAdmin.'"}');
+        $url = "https://api.mongolab.com/api/1/databases/prax/collections/anotaciones?apiKey=" . getMongoApiKey() . "&q=" . $query;
+        
+        $update = new stdClass();
+        
+        $data = new stdClass();
+		$data->{"documento_pacie"}=($docPaciente);
         
         $update->{"\$set"}=$data;
         $options = array(

@@ -26,6 +26,8 @@
     						<div style='text-align: justify;'>
     							<p>Cordial saludo.</p>
     							<p>Nos complace informar que ha sido creado en el sistema Prax Assist. A partir de este momento puede comenzar a utilizar el sistema.
+    							<br />
+    							<br />
     								Recuerde que su usuario es la cuenta de gmail que registró al momento de inscribirse y la clave es la que asignó a dicha cuenta. Nuestra organización desconoce la clave, si requiere recuperarla o cambiarla debe utilizar los métodos disponibles por Google.
     							<br/>
     							<br/>

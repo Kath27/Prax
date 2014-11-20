@@ -12,6 +12,7 @@
     unset($_SESSION["ctagmail_usuario"]);
     unset($_SESSION["userId"]);
     unset($_SESSION["rol"]);
+    unset($_SESSION["isActive"]);
     unset($_SESSION['access_token']);    
     session_destroy();
     

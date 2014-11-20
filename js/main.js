@@ -40,7 +40,8 @@ $("header").mouseleave(function(){
 $().ready(function(){
     $('#documento,#documento_cont').filter_input({regex:'[0-9]'});
     $('#nombre,#nombre_cont').filter_input({regex:'[a-zA-Z ]'});
-    $('#apellido,#apellido_cont').filter_input({regex:'[a-zA-Z ]'}); 
+    $('#apellido,#apellido_cont').filter_input({regex:'[a-zA-Z ]'});
+    $("#targProfe") .filter_input({regex:'[a-zA-Z 0-9]'});
 });
 //Fecha Actual Footer//
 var ano = (new Date).getFullYear();

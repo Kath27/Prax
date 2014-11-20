@@ -4,6 +4,7 @@ include('config_mongo.php');
 include('utilidades.php');
 session_start();
 if (!isset($_SESSION["userId"])){ header('Location: /'); }
+if($_SESSION["isActive"]=="F"){ header('Location: '.'/userInactivo'); exit; }
 
 $id_paciente = $_GET["paciente"];
 $idAdmin = ($_SESSION["rol"]=="admin")?"id_admin":"id_adminpsic";
@@ -322,14 +323,14 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                             <div class="cont_avatar">
                                 <div class="avatar">
                                     <div class="icon_upload icon-upload4"></div>
-                                    <img id="open_upload_avatar" src="<?php echo "/imageProxy?paciente=" . $paciente[2] . "&idAdmin=" . $id_admin; ?>">
+                                    <img id="open_upload_avatar" src="<?php echo "/imageProxy?paciente=" . $paciente[8] . "&idAdmin=" . $id_admin; ?>">
                                     <iframe name="iframeAvatar" id="iframeAvatar" style="display: none;"></iframe>
                                     <?php
                                         require_once 'google/appengine/api/cloud_storage/CloudStorageTools.php';
                                         use google\appengine\api\cloud_storage\CloudStorageTools;
                                         
                                         $options = array('gs_bucket_name' => 'imagespacientes');
-                                        $upload_url = CloudStorageTools::createUploadUrl('/uploadImage?paciente=' . $paciente[2] . '&idAdmin=' . $id_admin, $options);
+                                        $upload_url = CloudStorageTools::createUploadUrl('/uploadImage?paciente=' . $paciente[8] . '&idAdmin=' . $id_admin, $options);
                                     ?>
                                     <form id="frmAvatar" target="iframeAvatar" action="<?php echo $upload_url; ?>" method="POST" enctype="multipart/form-data">
                                         <input type="file" id="uploadAvatar" name="uploadAvatar" />
@@ -359,35 +360,38 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                 <div id="tabs-1">
                                     <p>
                                         <label>Nombre</label>
-                                        <input type='text' name='nombre' id='nombre' value= "<?php echo($paciente[0]);?>"/>
+                                        <input type='text' name='nombre' id='nombre' placeholder="Escriba el nombre del paciente" value= "<?php echo($paciente[0]);?>"/>
+                                        <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Apellidos</label>
-                                        <input type="text" id="apellido"value= "<?php echo($paciente[1]);?>"/>
+                                        <input type="text" id="apellido" placeholder="Escriba el apellido del paciente" value= "<?php echo($paciente[1]);?>"/>
+                                        <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Documento de identidad</label>
-                                        <input type="text" id="documento"value= "<?php echo($paciente[2]);?>"/>
+                                        <input type="text" id="documento" placeholder="Escriba el documento de identidad nacional del paciente (DNI)" value= "<?php echo($paciente[2]);?>"/>
+                                        <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Fecha de nacimiento</label>
-                                        <input type="text" id="fechanac" value= "<?php echo($paciente[3]);?>"/>
+                                        <input type="text" id="fechanac" placeholder="Escriba su fecha de nacimiento en el formato dd / mm / aaaa" value= "<?php echo(($paciente[3] == "0000-00-00")?"":$paciente[3]);?>"/>
                                     </p>
                                     <p>
                                         <label>Ubicación</label>
-                                        <input type="text" id="searchTextField"value= "<?php echo($paciente[4]);?>"/>
+                                        <input type="text" id="searchTextField" placeholder="Escriba el lugar de residencia del paciente" value= "<?php echo($paciente[4]);?>"/>
                                     </p>
                                     <p>
                                         <label>Teléfono fíjo</label>
-                                        <input type="text" id="telFijo"value= "<?php echo($paciente[5]);?>"/>
+                                        <input type="text" id="telFijo" placeholder="Escriba el número de teléfono del paciente especificando el código del país, el codigo de area y el número telefónico fijo" value= "<?php echo($paciente[5]);?>"/>
                                     </p>
                                     <p>
                                         <label>Teléfono movil</label>
-                                        <input type="text" id="telMovil"value= "<?php echo($paciente[6]);?>"/>
+                                        <input type="text" id="telMovil" placeholder="Escriba el número de teléfono del paciente especificando el código del país, el código de área y el número telefónico movil" value= "<?php echo($paciente[6]);?>"/>
                                     </p>
                                     <p>
                                         <label>Correo electronico</label>
-                                        <input type="text" id="mail"value= "<?php echo($paciente[7]);?>"/>
+                                        <input type="text" id="mail" placeholder="Escriba la dirección de email del paciente" value= "<?php echo($paciente[7]);?>"/>
                                     </p>
                                     <p>
                                     	<?php $sexM = ($paciente[10] == "M")? 'selected="selected"' : ""; ?>
@@ -455,19 +459,22 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                                 <div id="tabs-7">
                                     <p>
                                         <label>Nombre</label>
-                                        <input type='text' name='nombre_cont' id='nombre_cont' placeholder="Escriba el nombre completo de la persona de contacto" value= "<?php echo($paciente_contact[0]);?>"/>
+                                        <input type='text' name='nombre_cont' id='nombre_cont' placeholder="Escriba el nombre de la persona de contacto" value= "<?php echo($paciente_contact[0]);?>"/>
+                                        <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Apellidos</label>
-                                        <input type="text" id="apellido_cont" placeholder="Escriba el apelldio de la persona de contacto" value= "<?php echo($paciente_contact[1]);?>"/>
+                                        <input type="text" id="apellido_cont" placeholder="Escriba el apellido de la persona de contacto" value= "<?php echo($paciente_contact[1]);?>"/>
+                                        <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Documento de identidad</label>
                                         <input type="text" id="documento_cont" placeholder="Escriba el documento de identidad nacional de la persona de contacto (DNI)" value=  "<?php echo($paciente_contact[2]);?>"/>
+                                        <label class="help">Este campo es requerido</label>
                                     </p>
                                     <p>
                                         <label>Fecha de nacimiento</label>
-                                        <input type="text" id="fechanac_cont" placeholder="Escriba su fecha de nacimiento en el formato dd / mm / aaaa" value="<?php echo($paciente_contact[3]);?>"/>
+                                        <input type="text" id="fechanac_cont" placeholder="Escriba su fecha de nacimiento en el formato dd / mm / aaaa" value="<?php echo(($paciente_contact[3] == "0000-00-00")? "" : $paciente_contact[3]);?>"/>
                                     </p>
                                     <p>
                                         <label>Ubicación</label>
@@ -506,7 +513,7 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                 </div>            
             </article>
         </section>
-        <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> S.A.S 2014 - <span class="ano_current"></span>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
+        <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
         <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>
@@ -540,26 +547,11 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
             
 
                 function validateForm() {
-                    var email_validate = $.trim($('#ctagmail_usuario').val());
+                    var email_validate = $.trim($('#mail').val());
                     var nombre = $.trim($('#nombre').val());
                     var apellido = $.trim($('#apellido').val());
                     var doc = $.trim($('#documento').val());
-                    var sexo = $.trim($('#sexo').val());
-                    var fechanac = $.trim($('#fechanac').val());
-                    var tarjeProf = $.trim($('#targProfe').val());
-                    var ubicac = $.trim($('#searchTextField').val());
                     validate_required = true;
-
-                    if(email_validate==''){
-                        $('#ctagmail_usuario').parent().addClass('error');
-                        validate_required = false;
-                    }else{
-                        validate_required = false;
-                        if(validateEmailGmail(email_validate)){
-                           $('#ctagmail_usuario').parent().removeClass('error');
-                           validate_required = true;
-                        } 
-                    }
 
                     if(nombre==''){
                         $('#nombre').parent().addClass('error');
@@ -578,48 +570,58 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
 
                     if(doc==''){
                         $('#documento').parent().addClass('error');
-                        //$('input').focus(function(){
-                        //    $('#documento').parent().removeClass('error')
-                        //});
                         validate_required = false;
                     }else{
                         $('#documento').parent().removeClass('error');
-                    }
-
-                    if(sexo==''){
-                        $('#sexo').parent().addClass('error');
-                        validate_required = false;
-                    }else{
-                        $('#sexo').parent().removeClass('error');
-                    }
-
-                    if(fechanac==''){
-                        $('#fechnac').parent().addClass('error');
-                        validate_required = false;
-                    }else{
-                        $('#fechnac').parent().removeClass('error');
-                    }
-
-                    if(tarjeProf==''){
-                        $('#targProfe').parent().addClass('error');
-                        validate_required = false;
-                    }else{
-                        $('#targProfe').parent().removeClass('error');
-                    }
-
-                    if(ubicac==''){
-                        $('#searchTextField').parent().addClass('error');
-                        validate_required = false;
-                    }else{
-                        $('#searchTextField').parent().removeClass('error');
                     }
 
                     if(!validate_required){
                         return false;
                     }
 
-                    registroAdmin();                 
-                   
+                    return validateContactForm();                 
+                }
+                
+                function validateContactForm(){
+                	var nombre = $.trim($("#nombre_cont").val());
+                	var apellido = $.trim($("#apellido_cont").val());
+                	var documento = $.trim($("#documento_cont").val());
+                	var fecNac = $.trim($("#fechanac_cont").val());
+                	var ubicacion = $.trim($("#ubicacion_cont").val());
+                	var telfijo = $.trim($("#telFijo_cont").val());
+                	var telMovil = $.trim($("#telMovil_cont").val());
+                	var mail = $.trim($("#mail_cont").val());
+                	var validate_required = true;
+                	
+                	var valNotMandatory = (fecNac != '' && ubicacion != '' && telfijo != '' && telMovil != '' && mail != '');
+                	<?php if (mysql_num_rows($result2) > 0){ echo "valnotMandatory = true"; } ?>
+                	
+                	if (nombre == '' && valNotMandatory){
+                		$('#nombre_cont').parent().addClass('error');
+                        validate_required = false;
+                	}else{
+                		$('#nombre_cont').parent().removeClass('error');
+                	}
+                	
+                	if (apellido == '' && valNotMandatory){
+                		$('#apellido_cont').parent().addClass('error');
+                        validate_required = false;
+                	}else{
+                		$('#apellido_cont').parent().removeClass('error');
+                	}
+                	
+                	if (documento == '' && valNotMandatory){
+                		$('#documento_cont').parent().addClass('error');
+                        validate_required = false;
+                	}else{
+                		$('#documento_cont').parent().removeClass('error');
+                	}
+                	
+                	if(!validate_required){
+                        return false;
+                    }
+                    
+                    return true;
                 }
 
 
@@ -629,17 +631,18 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                         var arrobaa =  email_validate.split('@');
                         var type_email =  arrobaa[1].split('.');
                         if(type_email[0].toLowerCase()=='gmail'){
-                           console.log('El correo tiene un formato correcto y es gmail');
                            $('#ctagmail_usuario').parent().removeClass('error_2');
                             return true;
                         }else{
-                            alert('El correo debe ser una cuenta gmail');
+                            showNotification({message: 'El correo debe ser una cuenta gmail', type: "error"});
+                            setTimeout(closeNotification, 3000);
                             $('#ctagmail_usuario').parent().addClass('error_2');
                             return false;
                         }
                         
                     } else if(email_validate!='') {
-                        alert('El formato del correo no es valido');
+                        showNotification({message: 'El formato del correo no es valido', type: "error"});
+                        setTimeout(closeNotification, 3000);
                         $('#ctagmail_usuario').parent().addClass('error_2');
                         return false;
                     }
@@ -657,12 +660,14 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                         clearTimeout(temp_guadado);
                         
                     temp_guadado = setTimeout(function(){
-                        lastUpdate = $("#guardado").html();
-                        $("#guardado").html("Guardando...");
-                        $("#guardado").css("color","#a21218");
-                        setTimeout(function(){
-                            registroHistoria();
-                        }, 2000);
+                    	if (validateForm()){
+	                        lastUpdate = $("#guardado").html();
+	                        $("#guardado").html("Guardando...");
+	                        $("#guardado").css("color","#a21218");
+	                        setTimeout(function(){
+	                            registroHistoria();
+	                        }, 2000);
+                        }
                     }, 3000);
                 }
                 $("textarea,input[type=text],#sexo").keydown(autoSave);
@@ -685,14 +690,14 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                             
                             if(json.estado){
                                 var d = (new Date()).getTime();
-                                $("#open_upload_avatar").attr("src", "<?php echo "/imageProxy?paciente=" . $paciente[2] . "&idAdmin=" . $id_admin; ?>&time=" + d);
+                                $("#open_upload_avatar").attr("src", "<?php echo "/imageProxy?paciente=" . $paciente[8] . "&idAdmin=" . $id_admin; ?>&time=" + d);
                             }else{
                                 showNotification({
                                     message: json.message,
                                     type: "error"
                                 });
                                 setTimeout(closeNotification, 3000);
-                                $("#open_upload_avatar").attr("src", "<?php echo "/imageProxy?paciente=" . $paciente[2] . "&idAdmin=" . $id_admin; ?>&time=" + d);
+                                $("#open_upload_avatar").attr("src", "<?php echo "/imageProxy?paciente=" . $paciente[8] . "&idAdmin=" . $id_admin; ?>&time=" + d);
                             }
                         }catch (e){
                             showNotification({
@@ -738,6 +743,11 @@ $result3 = mysql_query($sql3, $link) or die(imprimir_respuesta(false,mysql_error
                 $(document).click(function(){
                     $(".editanotacion").each(function(){ $(this).hide(); $(this).off("keydown"); });
                     $(".lbledita").each(function(){ $(this).show(); });
+                });
+                
+                
+                $("#open_upload_avatar").click(function(){
+                	$("#uploadAvatar").click();
                 });
                 
                 var cityChanged = false;

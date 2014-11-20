@@ -14,6 +14,10 @@ if (!isset($_SESSION["userId"])){ header('Location: /'); }
         $user=$_SESSION["userId"];
         date_default_timezone_set('America/Lima');
         $fecha = date("Y-m-d H:i:s");
+		
+		if (!isReal($documento)) { imprimir_respuesta(false,"El documento $documento debe ser numérico","ErrorMysql"); }
+		if (!isTextOnly($nombre)) { imprimir_respuesta(false,"El nombre $nombre no debe contener números","ErrorMysql"); }
+		if (!isTextOnly($apellido)) { imprimir_respuesta(false,"El apellido $apellido no debe contener números","ErrorMysql"); }
 
         if($_SESSION["rol"]=="admin"){
            $columnaAdmin =  "id_admin";

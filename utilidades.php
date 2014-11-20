@@ -26,4 +26,18 @@
         }
         return $isGmail;
     }
+	
+	function isReal($number){
+		if (!preg_match('/[0-9]+/', $number)){
+		    return false;
+		}
+		return true;
+	}
+	
+	function isTextOnly($myString){
+		if (preg_match('/[0-9]+/', $myString)){
+		    return false;
+		}
+		return true;
+	}
 ?>

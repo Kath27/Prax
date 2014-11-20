@@ -3,6 +3,7 @@
 	include('config_mongo.php');
     session_start();
     if (!isset($_SESSION["userId"])){ header('Location: /'); }
+	if($_SESSION["isActive"]=="F"){ header('Location: '.'/userInactivo'); exit; }
 	
 	$id_admin = ($_SESSION["rol"] == "admin")? "a" : "p";
 	$id_admin .= $_SESSION["userId"];
@@ -132,7 +133,7 @@
             	<div style="height: 100px;">&nbsp;</div>
             </article>
         </section>
-        <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> S.A.S 2014 - <span class="ano_current"></span>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
+        <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
         <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>

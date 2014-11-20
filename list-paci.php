@@ -4,8 +4,9 @@ include('config.php');
 <?php
     session_start();
     if (!isset($_SESSION["userId"])){ header('Location: /'); }
+	if($_SESSION["isActive"]=="F"){ header('Location: '.'/userInactivo'); exit; }
     
-    $sql = "SELECT documento, nombre, apellido, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, sexo, fecha_crea, fecha_mod FROM prax.paciente";
+    $sql = "SELECT documento, nombre, apellido, fechnac, ubicacion, tel_fijo, tel_movil, ctagmail, sexo, fecha_crea, fecha_mod, id_paciente FROM prax.paciente";
     if($_SESSION["rol"]=="psico"){
         $sql.=" WHERE id_adminpsic='".$_SESSION["userId"]."'";
     }
@@ -94,7 +95,7 @@ include('config.php');
                                     <li>
                                         <div class="cont_avatar">
                                             <div class="avatar">
-                                                <img src="<?php echo "/imageProxy?paciente=" . $psico[0] . "&idAdmin=" . $id_admin; ?>">
+                                                <img src="<?php echo "/imageProxy?paciente=" . $psico[11] . "&idAdmin=" . $id_admin; ?>">
                                             </div>
                                         </div>
                                         <div class="cont_user_list">
@@ -102,7 +103,7 @@ include('config.php');
                                             <h2 class="name"><?php echo $psico[1] ." ". $psico[2] ." - ". $psico[0];?></h2>
                                             <div class="description_list_user"><?php echo $psico[7];?></div>
                                             <div class="description_list_user"><?php echo "Teléfono fijo: ".$psico[5]." - Teléfono movil: ".$psico[6];?></div>
-                                            <div class="description_list_user">Fecha de creación: <?php echo $psico[9];?></div>
+                                            <div class="description_list_user">Fecha de creado: <?php echo $psico[9];?></div>
                                             <div class="description_list_user">Ultima actualización: <?php echo $psico[10];?></div>
                                             
                                         </div>
@@ -116,7 +117,7 @@ include('config.php');
                 </div>            
             </article>
         </section>
-        <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> S.A.S 2014 - <span class="ano_current"></span>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
+        <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
         <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>

@@ -1,6 +1,7 @@
 <?php
 include('config.php');
 session_start();
+if($_SESSION["isActive"]=="F"){ header('Location: '.'/userInactivo'); exit; }
  ?>
 <!DOCTYPE html>
     <head>
@@ -197,7 +198,7 @@ session_start();
                 </div>            
             </article>
         </section>
-        <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> S.A.S 2014 - <span class="ano_current"></span>Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
+        <footer><span style="position: absolute; left:10px;"><a style="color: #a21218; font-size: 12px; text-decoration: none" target="_blank" href="http://www.prax.com.co/praxone/politicas-de-uso">Condiciones de uso</a></span> Prax S.A.S 2014 - <span class="ano_current"></span>. Todos los derechos reservados. Medellín - Colombia.</footer>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
         <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>
@@ -312,17 +313,18 @@ session_start();
                         var arrobaa =  email_validate.split('@');
                         var type_email =  arrobaa[1].split('.');
                         if(type_email[0].toLowerCase()=='gmail'){
-                           console.log('El correo tiene un formato correcto y es gmail');
                            $('#ctagmail_usuario').parent().removeClass('error_2');
                             return true;
                         }else{
-                            alert('El correo debe ser una cuenta gmail');
+                            showNotification({message: 'El correo debe ser una cuenta gmail', type: "error"});
+                            setTimeout(closeNotification, 3000);
                             $('#ctagmail_usuario').parent().addClass('error_2');
                             return false;
                         }
                         
                     } else if(email_validate!='') {
-                        alert('El formato del correo no es valido');
+                        showNotification({message: 'El formato del correo no es valido', type: "error"});
+                        setTimeout(closeNotification, 3000);
                         $('#ctagmail_usuario').parent().addClass('error_2');
                         return false;
                     }
